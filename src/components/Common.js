@@ -12,4 +12,4 @@ export const PinCodeInput = (props) => {
     text-align: center;
   `;
   return (<Center><CodeInput {...props} /></Center>);
-}
+};
