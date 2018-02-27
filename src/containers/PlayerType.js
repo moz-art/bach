@@ -23,10 +23,11 @@ class PlayerType extends PureComponent {
   }
 
   render() {
+    const code = this.props.location.state.code;
     return (
       <Card>
         <CardHeader>
-          Be what you want!
+          Choose a role! (Room Code: {code})
         </CardHeader>
         <CardBody>
           <CardGroup>
