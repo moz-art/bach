@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'reactstrap';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 class PlayerType extends PureComponent {
 

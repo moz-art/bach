@@ -5,6 +5,7 @@ import gclef from '../images/gclef.png'
 
 const StyledNavbar = styled(Navbar)`
   max-height: 80px;
+  justify-content: center;
 `;
 const MozartBrand = styled(NavbarBrand)`
   font-family: 'IM Fell English SC', serif;

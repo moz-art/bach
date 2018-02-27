@@ -1,6 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Button } from 'reactstrap';
-import { withRouter } from 'react-router-dom'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardText
+} from 'reactstrap';
+import { withRouter } from 'react-router-dom';
+import { CardTitle, PinCodeInput } from '../components/Common';
 
 class PinCode extends PureComponent {
 
@@ -10,10 +16,19 @@ class PinCode extends PureComponent {
 
   render() {
     return (
-      <section>
-        Please input your PINCODE:
-        <Button onClick={this.handlePinCodeInputed}>Next</Button>
-      </section>
+      <Card>
+        <CardBody>
+          <CardTitle>Pin Code</CardTitle>
+          <PinCodeInput fields={4} />
+          <CardText>Note: All people with the same Pin Code will join the same group</CardText>
+          <Button
+            block
+            color='primary'
+            onClick={this.handlePinCodeInputed}>
+            Next
+          </Button>
+        </CardBody>
+      </Card>
     );
   }
 }
