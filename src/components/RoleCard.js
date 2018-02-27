@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {
   Button,
   Card,
-  CardBody,
+  CardImg,
+  CardImgOverlay,
   CardText,
   CardTitle
 } from 'reactstrap';
@@ -11,21 +12,18 @@ import styled from 'styled-components';
 import conductorImg from '../images/conductor.png';
 import musicianImg from '../images/musician.jpg';
 
-const StyledImg = styled.img`
-  width: 100%;
-  padding-bottom: 100%;
-  max-width: 400px;
+const StyledCardImgOverlay = styled(CardImgOverlay)`
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
 `;
 
-const StyledConductorImg = styled(StyledImg)`
-  background-image: url('${conductorImg}');
-  background-size: 100%;
-  background-position: 0, 0;
-  background-repeat: no-repeat;
+const StyledCardText = styled(CardText)`
+  flex: 1 1 auto;
 `;
 
-const StyledMusicianImg = styled(StyledImg)`
-  background-image: url('${musicianImg}');
+const StyledCard = styled(Card)`
+  margin: 10px;
 `;
 
 class RoleCard extends PureComponent {
@@ -48,17 +46,16 @@ class RoleCard extends PureComponent {
       type,
       onClick
     } = this.props;
-    const Img = type === 'conductor' ? StyledConductorImg : StyledMusicianImg;
+    const img = type === 'conductor' ? conductorImg : musicianImg;
     return (
-      <Card>
-        <CardBody>
+      <StyledCard inverse>
+        <CardImg width='100%' src={img} alt={description} />
+        <StyledCardImgOverlay>
           <CardTitle>{name}</CardTitle>
-
-          <Img/>
-          <CardText>{description}</CardText>
-          <Button color={buttonColor} block onClick={onClick}>{buttonText}</Button>
-        </CardBody>
-      </Card>
+          <StyledCardText>{description}</StyledCardText>
+          <Button block color={buttonColor} size='lg' onClick={onClick}>{buttonText}</Button>
+        </StyledCardImgOverlay>
+      </StyledCard>
     );
   }
 }

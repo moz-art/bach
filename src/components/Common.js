@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CardTitle as BaseCardTitle } from 'reactstrap';
+import { CardHeader as BaseCardHeader } from 'reactstrap';
 import CodeInput from 'react-code-input';
 
-export const CardTitle = styled(BaseCardTitle)`
+export const CardHeader = styled(BaseCardHeader)`
   text-align: center;
 `;
 

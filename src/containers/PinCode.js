@@ -6,7 +6,7 @@ import {
   CardText
 } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
-import { CardTitle, PinCodeInput } from '../components/Common';
+import { CardHeader, PinCodeInput } from '../components/Common';
 
 class PinCode extends PureComponent {
 
@@ -17,8 +17,8 @@ class PinCode extends PureComponent {
   render() {
     return (
       <Card>
+        <CardHeader>Pin Code</CardHeader>
         <CardBody>
-          <CardTitle>Pin Code</CardTitle>
           <PinCodeInput fields={4} />
           <CardText>Note: All people with the same Pin Code will join the same group</CardText>
           <Button
