@@ -1,14 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Button, Navbar, NavbarBrand } from 'reactstrap';
-import gclef from './images/gclef.png';
+import { Button } from 'reactstrap';
+import MozartHeader from './components/MozartHeader';
 
 class App extends PureComponent {
   render() {
     return (
       <section>
-        <Navbar light>
-          <NavbarBrand><img alt='clef logo' src={gclef}/>Mozart</NavbarBrand>
-        </Navbar>
+        <MozartHeader />
         <Button color='info'>Conductor</Button>
         <Button color='success'>Player</Button>
       </section>
