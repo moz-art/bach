@@ -1,3 +1,3 @@
 loading.gif => https://upload.wikimedia.org/wikipedia/commons/7/7d/Pedro_luis_romani_ruiz.gif
 2. conductor.png => https://commons.wikimedia.org/wiki/File:Taktstock.png
-3. musician.jpg => https://en.wikipedia.org/wiki/File:Kathleen_Edwards_at_the_Black_Sheep_Inn.jpg
+3. musician.jpg => https://commons.wikimedia.org/wiki/File:Dublin_Philharmonic_Orchestra_performing_Tchaikovsky%27s_Symphony_No_4_in_Charlotte,_North_Carolina.jpg
