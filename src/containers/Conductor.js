@@ -9,7 +9,7 @@ class Conductor extends PureComponent {
 
     this.state = {
       meters: []
-    }
+    };
   }
   componentDidMount () {
     const steps = ['down', 'left', 'right', 'up'];

@@ -3,6 +3,7 @@ import { API_EVENTS, WS_EVENTS } from '../constants/Constant';
 
 export class ServerAPI extends EventEmitter {
   constructor(url) {
+    super();
     this.url = url || this.getServerURL();
   }
 
@@ -75,8 +76,10 @@ export class ServerAPI extends EventEmitter {
         this.emit(API_EVENTS.GROUP_NOTE_ON, data.note, data.velocity);
         break;
       case WS_EVENTS.NOTE_OFF:
-        this.emit(API_EVENTS.GROUP_NOTE_OFF), data.note;
+        this.emit(API_EVENTS.GROUP_NOTE_OFF, data.note);
         break;
+      default:
+        console.error('unsupported event', msg);
     }
   }
 
