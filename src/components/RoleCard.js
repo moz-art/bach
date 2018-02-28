@@ -53,7 +53,7 @@ class RoleCard extends PureComponent {
         <StyledCardImgOverlay>
           <CardTitle>{name}</CardTitle>
           <StyledCardText>{description}</StyledCardText>
-          <Button block color={buttonColor} size='lg' onClick={onClick}>{buttonText}</Button>
+          <Button block color={buttonColor} size='lg' data-type={type} onClick={onClick}>{buttonText}</Button>
         </StyledCardImgOverlay>
       </StyledCard>
     );

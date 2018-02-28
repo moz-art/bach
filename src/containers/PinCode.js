@@ -41,7 +41,7 @@ class PinCode extends PureComponent {
 
   handleCodeChanged = (code) => {
     // XXX
-    // There is a defact on react-code-input. The focus jumps to first field if We set the value.
+    // There is a defact on react-code-input. The focus jumps to first field if we set the value.
     // The workaround is to save the value at this scope and save to state when button clicked.
     this.code = code;
   }
