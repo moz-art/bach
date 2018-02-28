@@ -22,7 +22,7 @@ export const API_EVENTS = {
   GROUP_JOINED: 'groupJoined',
   GROUP_NOTE_OFF: 'noteOff',
   GROUP_NOTE_ON: 'noteOn',
-  GROUP_TRACK_INFO: 'trackInfo'
+  GROUP_TRACK_INFO: 'trackInfo',
   OPENED: 'opened',
-  ROLE_RESULT: 'requestRoleResult',
+  ROLE_RESULT: 'requestRoleResult'
 };
