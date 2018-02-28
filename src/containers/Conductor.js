@@ -1,9 +1,60 @@
 import React, { PureComponent } from 'react';
+import Leap from 'leapjs'
+
+const POSITION_THRESHOLD = 100;
 
 class Conductor extends PureComponent {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      meters: []
+    }
+  }
+  componentDidMount () {
+    const steps = ['down', 'left', 'right', 'up'];
+    const axis = [1, 0, 0, 1];
+    const options = {};
+    let startPosition = null;
+    let previousTimestamp;
+    let max = 0;
+    let step = 0;
+    Leap.loop(options, frame => {
+      if (frame.hands.length > 0) {
+        const hand = frame.hands[0];
+        if (!startPosition) {
+          startPosition = hand.palmPosition;
+          previousTimestamp = frame.timestamp;
+        }
+
+        const currentPosition = hand.palmPosition;
+
+        const nextMax = Math.abs(currentPosition[axis[step]] - startPosition[axis[step]]);
+        if (nextMax > max) {
+          max = nextMax;
+        } else if (max - nextMax > POSITION_THRESHOLD) {
+          const duration = ((frame.timestamp - previousTimestamp) / 1000).toFixed(0);
+          const meters = this.state.meters.slice();
+          meters.push({ step: steps[step], duration });
+          this.setState({meters});
+          startPosition = null;
+          max = 0;
+          step = (step + 1) % 4;
+        }
+      }
+    });
+  }
+
+  renderMeters() {
+    return this.state.meters
+      .map((meter, i) => <div key={i}>{meter.step}: {meter.duration}</div>);
+  }
+
   render() {
     return (
-      <span>I am conductor</span>
+      <div>
+        {this.renderMeters()}
+      </div>
     );
   }
 }
