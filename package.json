@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.0.0",
+    "eventemitter3": "^3.0.1",
     "react": "^16.2.0",
     "react-code-input": "^3.0.0",
     "react-dom": "^16.2.0",
