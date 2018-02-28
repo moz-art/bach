@@ -18,6 +18,15 @@
   }
 ```
 
+* setSpeed: this API is used for telling server the current speed made by conductor.
+
+``` javascript
+  {
+    "event": "setSpeed",
+    "speed": 0.9 // this may be changed if we can support bpm.
+  }
+```
+
 ## API from Mozart to Bach
 
 * joinGroup: the result of the `joinGroup` request. It ships with group information, for example:

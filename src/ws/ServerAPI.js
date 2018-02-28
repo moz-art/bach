@@ -100,6 +100,13 @@ export class ServerAPI extends EventEmitter {
       type
     });
   }
+
+  setSpeed = (speed) => {
+    this.sendMessage({
+      event: WS_EVENTS.SET_SPEED,
+      speed
+    });
+  }
 }
 
 export default new ServerAPI();

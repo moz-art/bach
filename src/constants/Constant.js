@@ -5,7 +5,8 @@ export const WS_EVENTS = {
   GROUP_NOTE_ON: 'noteOn',
   GROUP_TRACK_INFO: 'trackInfo',
   JOIN_GROUP: 'joinGroup',
-  REQUEST_ROLE: 'requestRole'
+  REQUEST_ROLE: 'requestRole',
+  SET_SPEED: 'setSpeed'
 };
 
 export const ROLE_TYPE = {
