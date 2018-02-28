@@ -18,16 +18,19 @@ class PinCode extends PureComponent {
     super(props);
     this.state = {
       code: '',
-      loading: false
+      loadingMessage: null
     };
   }
 
   handlePinCodeInputed = () => {
     document.activeElement.blur();
     // put the code back to render the react-code-input correctly.
-    this.setState({ loading: true, code: this.code });
+    this.setState({
+      code: this.code,
+      loadingMessage: 'Connecting to Server'
+    });
     setTimeout(() => {
-      this.setState({ loading: false }, () => {
+      this.setState({ loadingMessage: null }, () => {
         this.props.history.push({
           pathname: '/player_type',
           state: { code: this.code }
@@ -44,14 +47,14 @@ class PinCode extends PureComponent {
   }
 
   render() {
-    const { code, loading } = this.state;
+    const { code, loadingMessage } = this.state;
     return (
       <Card>
-        {loading && <LoadingMask />}
+        {loadingMessage && <LoadingMask>{loadingMessage}</LoadingMask>}
         <CardHeader>Pin Code</CardHeader>
         <CardBody>
           <PinCodeInput
-            disabled={loading}
+            disabled={!!loadingMessage}
             fields={4}
             type='number'
             value={code}
@@ -60,7 +63,7 @@ class PinCode extends PureComponent {
           <Button
             block
             color='primary'
-            disabled={loading}
+            disabled={!!loadingMessage}
             onClick={this.handlePinCodeInputed}>
             Next
           </Button>

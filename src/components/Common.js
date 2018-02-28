@@ -29,12 +29,15 @@ export const LoadingMask = styled.div`
   bottom: 0;
   z-index: 1000;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.7);
 
-  &:after {
+  &:before {
     content: ' ';
+    max-width: 120px;
+    max-height: 120px;
     width: 50%;
     height: 50%;
     background-image: url('${loadingImg}');
