@@ -1,3 +1,12 @@
 loading.gif => https://upload.wikimedia.org/wikipedia/commons/7/7d/Pedro_luis_romani_ruiz.gif
 2. conductor.png => https://commons.wikimedia.org/wiki/File:Taktstock.png
 3. musician.jpg => https://commons.wikimedia.org/wiki/File:Dublin_Philharmonic_Orchestra_performing_Tchaikovsky%27s_Symphony_No_4_in_Charlotte,_North_Carolina.jpg
+4. violin.png => https://en.wikipedia.org/wiki/Violin#/media/File:Violin_VL100.png
+5. contrabass.png => https://zh.wikipedia.org/wiki/%E4%BD%8E%E9%9F%B3%E6%8F%90%E7%90%B4#/media/File:AGK_bass1_full.jpg
+6. acoustic grand piano.png => https://upload.wikimedia.org/wikipedia/commons/3/31/John_Broadwood_%26_Sons_Grand_Piano.jpg
+7. oboe => https://en.wikipedia.org/wiki/Oboe#/media/File:Yamaha_Oboe_YOB-831.tif
+8. clarinet => https://en.wikipedia.org/wiki/Clarinet#/media/File:Yamaha_Clarinet_YCL-457II-22.tiff
+9. bassoon => https://en.wikipedia.org/wiki/Bassoon#/media/File:Yamaha_Bassoon_YFG-812_II.tif
+10. french horn => https://en.wikipedia.org/wiki/French_horn#/media/File:French_horn_front.png
+11. trumpet => https://en.wikipedia.org/wiki/Trumpet#/media/File:Trumpet_1.png
+
