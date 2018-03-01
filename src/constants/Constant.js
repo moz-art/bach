@@ -26,3 +26,12 @@ export const API_EVENTS = {
   OPENED: 'opened',
   ROLE_RESULT: 'requestRoleResult'
 };
+
+export const BASE_URL = '/';
+
+export const PAGE_URL = {
+  PIN_CODE: `${BASE_URL}`,
+  ROLE_SELECTOR: `${BASE_URL}role`,
+  CONDUCTOR: `${BASE_URL}conductor`,
+  MUSICIAN: `${BASE_URL}musician`,
+};

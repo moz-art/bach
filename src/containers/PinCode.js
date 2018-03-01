@@ -6,6 +6,7 @@ import {
   CardText
 } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
+import { PAGE_URL } from '../constants/Constant';
 import {
   CardHeader,
   LoadingMask,
@@ -32,11 +33,11 @@ class PinCode extends PureComponent {
     setTimeout(() => {
       this.setState({ loadingMessage: null }, () => {
         this.props.history.push({
-          pathname: '/player_type',
+          pathname: PAGE_URL.ROLE_SELECTOR,
           state: { code: this.code }
         });
       });
-    }, 5000);
+    }, 1500);
   }
 
   handleCodeChanged = (code) => {

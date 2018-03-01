@@ -6,7 +6,7 @@ import {
   CardHeader
 } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
-import { ROLE_TYPE } from '../constants/Constant';
+import { PAGE_URL, ROLE_TYPE } from '../constants/Constant';
 import RoleCard from '../components/RoleCard';
 
 class PlayerType extends PureComponent {
@@ -15,8 +15,10 @@ class PlayerType extends PureComponent {
     const type = e.target.dataset.type;
     switch (type) {
       case ROLE_TYPE.CONDUCTOR:
+        this.props.history.push(PAGE_URL.CONDUCTOR);
+        break;
       case ROLE_TYPE.MUSICIAN:
-        this.props.history.push(`/${type}`);
+        this.props.history.push(PAGE_URL.MUSICIAN);
         break;
       default:
         console.warn(`wrong player type got: ${type}`);

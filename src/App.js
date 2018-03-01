@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { PAGE_URL } from './constants/Constant';
 import MozartHeader from './components/MozartHeader';
 import Conductor from './containers/Conductor';
 import Musician from './containers/Musician';
 import PinCode from './containers/PinCode';
-import PlayerType from './containers/PlayerType';
+import RoleSelector from './containers/RoleSelector';
 
 class App extends PureComponent {
   render() {
@@ -12,10 +13,10 @@ class App extends PureComponent {
       <BrowserRouter>
         <section>
           <MozartHeader />
-          <Route exact path='/' component={PinCode} />
-          <Route path='/player_type' component={PlayerType} />
-          <Route path='/conductor' component={Conductor} />
-          <Route path='/musician' component={Musician} />
+          <Route exact path={PAGE_URL.PIN_CODE} component={PinCode} />
+          <Route path={PAGE_URL.ROLE_SELECTOR} component={RoleSelector} />
+          <Route path={PAGE_URL.CONDUCTOR} component={Conductor} />
+          <Route path={PAGE_URL.MUSICIAN} component={Musician} />
         </section>
       </BrowserRouter>
     );
