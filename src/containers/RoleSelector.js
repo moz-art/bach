@@ -11,14 +11,29 @@ import RoleCard from '../components/RoleCard';
 
 class PlayerType extends PureComponent {
 
+  componentDidMount = () => {
+    if (!this.props.location.state || !this.props.location.state.code) {
+      // no code no show.
+      this.props.history.replace(PAGE_URL.PIN_CODE);
+      return;
+    }
+  }
+
   handlePlayerTypeChoosed = (e) => {
     const type = e.target.dataset.type;
+    const code = this.props.location.state.code;
     switch (type) {
       case ROLE_TYPE.CONDUCTOR:
-        this.props.history.push(PAGE_URL.CONDUCTOR);
+        this.props.history.push({
+          pathname: PAGE_URL.CONDUCTOR,
+          state: { code }
+        });
         break;
       case ROLE_TYPE.MUSICIAN:
-        this.props.history.push(PAGE_URL.MUSICIAN);
+        this.props.history.push({
+          pathname: PAGE_URL.MUSICIAN,
+          state: { code }
+        });
         break;
       default:
         console.warn(`wrong player type got: ${type}`);
@@ -26,6 +41,10 @@ class PlayerType extends PureComponent {
   }
 
   render() {
+    if (!this.props.location.state || !this.props.location.state.code) {
+      // no code no show.
+      return null;
+    }
     const code = this.props.location.state.code;
     return (
       <Card>
