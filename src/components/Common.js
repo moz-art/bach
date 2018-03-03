@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CardHeader as BaseCardHeader } from 'reactstrap';
+import {
+  Card as BaseCard,
+  CardHeader as BaseCardHeader,
+  CardImg as BaseCardImg,
+  CardImgOverlay as BaseImgOverlay,
+  CardText as BaseCardText
+} from 'reactstrap';
 import CodeInput from 'react-code-input';
 import loadingImg from '../images/loading.gif';
 
@@ -45,5 +51,47 @@ export const LoadingMask = styled.div`
     background-repeat: no-repeat;
     background-size: 100%;
   }
+`;
 
+export const StyledCardImgOverlay = styled(BaseImgOverlay)`
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CenteredImgOverlay = styled(StyledCardImgOverlay)`
+  justify-content: center;
+`;
+
+export const FullSizeCardText = styled(BaseCardText)`
+  flex: 1 1 auto;
+`;
+
+export const NoteText = styled(BaseCardText)`
+  align-self: center;
+  text-align: center;
+  margin-top: auto;
+  &.card-text {
+    margin-bottom: auto;
+  }
+  font-size: xx-large;
+`;
+
+export const Card = styled(({ maxHeight, maxWidth, ...props }) => (<BaseCard {...props} />))`
+  ${props => props.maxHeight ? `max-height: ${props.maxHeight}` : ''}
+  ${props => props.maxWidth ? `max-width: ${props.maxWidth}` : ''}
+`;
+
+export const CenteredCard = styled(Card)`
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const MarginedCard = styled(Card)`
+  margin: 10px;
+`;
+
+export const CardImg = styled(({ maxHeight, maxWidth, ...props }) => <BaseCardImg {...props} />)`
+  ${props => props.maxHeight ? `max-height: ${props.maxHeight}` : ''}
+  ${props => props.maxWidth ? `max-width: ${props.maxWidth}` : ''}
 `;

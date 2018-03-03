@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Navbar, NavbarBrand } from 'reactstrap';
-import gclef from '../images/gclef.png'
+import gclef from '../images/gclef.png';
 
 const StyledNavbar = styled(Navbar)`
   max-height: 80px;

@@ -2,29 +2,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
-  Card,
   CardImg,
-  CardImgOverlay,
-  CardText,
   CardTitle
 } from 'reactstrap';
-import styled from 'styled-components';
+import {
+  FullSizeCardText,
+  MarginedCard,
+  StyledCardImgOverlay
+} from './Common';
 import conductorImg from '../images/conductor.png';
 import musicianImg from '../images/musician.jpg';
-
-const StyledCardImgOverlay = styled(CardImgOverlay)`
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledCardText = styled(CardText)`
-  flex: 1 1 auto;
-`;
-
-const StyledCard = styled(Card)`
-  margin: 10px;
-`;
 
 class RoleCard extends PureComponent {
 
@@ -48,14 +35,14 @@ class RoleCard extends PureComponent {
     } = this.props;
     const img = type === 'conductor' ? conductorImg : musicianImg;
     return (
-      <StyledCard inverse>
+      <MarginedCard inverse>
         <CardImg width='100%' src={img} alt={description} />
         <StyledCardImgOverlay>
           <CardTitle>{name}</CardTitle>
-          <StyledCardText>{description}</StyledCardText>
+          <FullSizeCardText>{description}</FullSizeCardText>
           <Button block color={buttonColor} size='lg' data-type={type} onClick={onClick}>{buttonText}</Button>
         </StyledCardImgOverlay>
-      </StyledCard>
+      </MarginedCard>
     );
   }
 }
