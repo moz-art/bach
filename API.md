@@ -44,6 +44,14 @@
   }
 ```
 
+* musicianReady: this API is used for telling conductor this musician is ready for playing, who already loaded all resources.
+
+``` javascript
+  {
+    "event": "musicianReady"
+  }
+```
+
 ## API from Mozart to Bach
 
 * joinGroup: the result of the `joinGroup` request. It ships with group information, for example:
@@ -53,7 +61,8 @@
     "event": "joinGroup",
     "group": {
       "hasConductor": false,
-      "musicianCount": 1
+      "musicianCount": 1,
+      "readyCount": 0
     }
   }
 ```
@@ -67,7 +76,8 @@
     "group": {
       "song": "bumblebee",
       "hasConductor": false,
-      "musicianCount": 1
+      "musicianCount": 1,
+      "readyCount": 0
     }
   }
 ```
@@ -81,8 +91,9 @@
     "instruments": [ "acoustic_grand_piano", "violin" ],
     "group": {
       "song": "bumblebee",
-      "hasConductor": false,
-      "musicianCount": 1
+      "hasConductor": true,
+      "musicianCount": 1,
+      "readyCount": 0
     }
   }
 ```
@@ -94,8 +105,9 @@
     "event": "groupChanged",
     "group": {
       "song": "bumblebee",
-      "hasConductor": false,
-      "musicianCount": 2
+      "hasConductor": true,
+      "musicianCount": 2,
+      "readyCount": 1
     }
   }
 ```

@@ -5,6 +5,7 @@ export const WS_EVENTS = {
   GROUP_NOTE_ON: 'noteOn',
   GROUP_TRACK_INFO: 'trackInfo',
   JOIN_GROUP: 'joinGroup',
+  MUSICIAN_READY: 'musicianReady',
   REQUEST_ROLE: 'requestRole',
   SET_SPEED: 'setSpeed',
   SET_SONG: 'setSong',
@@ -37,3 +38,11 @@ export const PAGE_URL = {
   CONDUCTOR: `${BASE_URL}conductor`,
   MUSICIAN: `${BASE_URL}musician`,
 };
+
+export const NOTE_MAP = {
+  24: 'C',
+  26: 'D',
+  28: 'E',
+  30: 'F',
+  32: 'G',
+}
