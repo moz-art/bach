@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import Leap from 'leapjs'
+import Leap from 'leapjs';
+import { PAGE_URL } from '../constants/Constant';
 
 const POSITION_THRESHOLD = 100;
 
@@ -12,6 +13,12 @@ class Conductor extends PureComponent {
     };
   }
   componentDidMount () {
+    if (!this.props.location.state || !this.props.location.state.code) {
+      // no code no show.
+      this.props.history.replace(PAGE_URL.PIN_CODE);
+      return;
+    }
+
     const steps = ['down', 'left', 'right', 'up'];
     const axis = [1, 0, 0, 1];
     const options = {};
@@ -51,6 +58,10 @@ class Conductor extends PureComponent {
   }
 
   render() {
+    if (!this.props.location.state || !this.props.location.state.code) {
+      // no code no show.
+      return null;
+    }
     return (
       <div>
         {this.renderMeters()}
