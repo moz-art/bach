@@ -22,8 +22,16 @@ class PinCode extends PureComponent {
       code: '',
       loadingMessage: null
     };
+  }
+
+  componentDidMount() {
     ServerAPI.on(API_EVENTS.OPENED, this.handleServerOpened);
     ServerAPI.on(API_EVENTS.GROUP_JOINED, this.handleGroupJoined);
+  }
+
+  componentWillUnmount() {
+    ServerAPI.off(API_EVENTS.OPENED, this.handleServerOpened);
+    ServerAPI.off(API_EVENTS.GROUP_JOINED, this.handleGroupJoined);
   }
 
   handleServerOpened = () => {
@@ -63,7 +71,7 @@ class PinCode extends PureComponent {
       code: this.code,
       loadingMessage: 'Connecting to Server'
     }, () => {
-      if (!ServerAPI.socketOpened) {
+      if (!ServerAPI.ready) {
         ServerAPI.connect();
       } else {
         this.handleServerOpened();

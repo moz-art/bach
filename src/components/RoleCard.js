@@ -20,7 +20,7 @@ class RoleCard extends PureComponent {
     buttonText: PropTypes.string,
     description: PropTypes.string,
     name: PropTypes.string,
-    type: PropTypes.oneOf(['conductor', 'musician']).isRequired,
+    role: PropTypes.oneOf(['conductor', 'musician']).isRequired,
     onClick: PropTypes.func
   };
 
@@ -30,17 +30,17 @@ class RoleCard extends PureComponent {
       buttonText,
       description,
       name,
-      type,
+      role,
       onClick
     } = this.props;
-    const img = type === 'conductor' ? conductorImg : musicianImg;
+    const img = role === 'conductor' ? conductorImg : musicianImg;
     return (
       <MarginedCard inverse>
         <CardImg width='100%' src={img} alt={description} />
         <StyledCardImgOverlay>
           <CardTitle>{name}</CardTitle>
           <FullSizeCardText>{description}</FullSizeCardText>
-          <Button block color={buttonColor} size='lg' data-type={type} onClick={onClick}>{buttonText}</Button>
+          <Button block color={buttonColor} size='lg' data-role={role} onClick={onClick}>{buttonText}</Button>
         </StyledCardImgOverlay>
       </MarginedCard>
     );

@@ -1,18 +1,21 @@
 import React, { PureComponent } from 'react';
 import MusicianCard from '../components/MusicianCard';
 import { PAGE_URL } from '../constants/Constant';
+import ServerAPI from '../ws/ServerAPI';
 
 class Musician extends PureComponent {
   componentDidMount = () => {
-    if (!this.props.location.state || !this.props.location.state.code) {
+    const { location, history } = this.props;
+    if (!location.state || !location.state.code || !ServerAPI.ready) {
       // no code no show.
-      this.props.history.replace(PAGE_URL.PIN_CODE);
+      history.replace(PAGE_URL.PIN_CODE);
       return;
     }
   }
 
   render() {
-    if (!this.props.location.state || !this.props.location.state.code) {
+    const { location } = this.props;
+    if (!location.state || !location.state.code || !ServerAPI.ready) {
       // no code no show.
       return null;
     }

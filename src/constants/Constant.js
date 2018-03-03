@@ -6,7 +6,9 @@ export const WS_EVENTS = {
   GROUP_TRACK_INFO: 'trackInfo',
   JOIN_GROUP: 'joinGroup',
   REQUEST_ROLE: 'requestRole',
-  SET_SPEED: 'setSpeed'
+  SET_SPEED: 'setSpeed',
+  SET_SONG: 'setSong',
+  START: 'start'
 };
 
 export const ROLE_TYPE = {

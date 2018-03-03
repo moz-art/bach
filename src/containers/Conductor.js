@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import Leap from 'leapjs';
 import { PAGE_URL } from '../constants/Constant';
+import ServerAPI from '../ws/ServerAPI';
 
 const POSITION_THRESHOLD = 100;
 
@@ -13,9 +14,10 @@ class Conductor extends PureComponent {
     };
   }
   componentDidMount () {
-    if (!this.props.location.state || !this.props.location.state.code) {
+    const { location, history } = this.props;
+    if (!location.state || !location.state.code || !ServerAPI.ready) {
       // no code no show.
-      this.props.history.replace(PAGE_URL.PIN_CODE);
+      history.replace(PAGE_URL.PIN_CODE);
       return;
     }
 
@@ -58,7 +60,7 @@ class Conductor extends PureComponent {
   }
 
   render() {
-    if (!this.props.location.state || !this.props.location.state.code) {
+    if (!this.props.location.state || !this.props.location.state.code || !ServerAPI.ready) {
       // no code no show.
       return null;
     }

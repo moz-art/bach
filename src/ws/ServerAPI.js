@@ -24,21 +24,21 @@ export class ServerAPI extends EventEmitter {
   }
 
   close = () => {
-    if (!this.socketOpened) {
+    if (!this.ready) {
       throw new Error('socket is not ready, you should wait for socket ready before sending any request.');
     }
     this.socket.close();
   }
 
   handleSocketOpened = () => {
-    this.socketOpened = true;
+    this.ready = true;
     this.emit(API_EVENTS.OPENED);
   }
 
   handleSocketClosed = () => {
     this.emit(API_EVENTS.CLOSED);
     delete this.socket;
-    this.socketOpened = false;
+    this.ready = false;
   }
 
   handleSocketError = (e, ...args) => {
@@ -60,7 +60,7 @@ export class ServerAPI extends EventEmitter {
         this.emit(API_EVENTS.GROUP_JOINED, data.group);
         break;
       case WS_EVENTS.REQUEST_ROLE:
-        this.emit(API_EVENTS.ROLE_RESULT, data.role);
+        this.emit(API_EVENTS.ROLE_RESULT, data.role, data.group);
         break;
       // GROUP API
       case WS_EVENTS.GROUP_CLOSED:
@@ -70,13 +70,13 @@ export class ServerAPI extends EventEmitter {
         this.emit(API_EVENTS.GROUP_CHANGED, data.group);
         break;
       case WS_EVENTS.TRACK_INFO:
-        this.emit(API_EVENTS.GROUP_TRACK_INFO, data.data, data.channels);
+        this.emit(API_EVENTS.GROUP_TRACK_INFO, data.channels, data.instruments, data.group);
         break;
       case WS_EVENTS.NOTE_ON:
-        this.emit(API_EVENTS.GROUP_NOTE_ON, data.note, data.velocity);
+        this.emit(API_EVENTS.GROUP_NOTE_ON, data.notes);
         break;
       case WS_EVENTS.NOTE_OFF:
-        this.emit(API_EVENTS.GROUP_NOTE_OFF, data.note);
+        this.emit(API_EVENTS.GROUP_NOTE_OFF, data.notes);
         break;
       default:
         console.error('unsupported event', msg);
@@ -84,7 +84,7 @@ export class ServerAPI extends EventEmitter {
   }
 
   sendMessage = (msg) => {
-    if (!this.socketOpened) {
+    if (!this.ready) {
       throw new Error('socket is not ready, you should wait for socket ready before sending any request.');
     }
     this.socket.send(JSON.stringify(msg));
@@ -97,10 +97,10 @@ export class ServerAPI extends EventEmitter {
     });
   }
 
-  requestRole = (type) => {
+  requestRole = (role) => {
     this.sendMessage({
       event: WS_EVENTS.REQUEST_ROLE,
-      type
+      role
     });
   }
 
@@ -108,6 +108,19 @@ export class ServerAPI extends EventEmitter {
     this.sendMessage({
       event: WS_EVENTS.SET_SPEED,
       speed
+    });
+  }
+
+  setSong = (song) => {
+    this.sendMessage({
+      event: WS_EVENTS.SET_SONG,
+      song
+    });
+  }
+
+  setSong = (song) => {
+    this.sendMessage({
+      event: WS_EVENTS.START,
     });
   }
 }
