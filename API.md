@@ -27,6 +27,23 @@
   }
 ```
 
+* setSong: this API is used for telling server which song we want to play.
+
+``` javascript
+  {
+    "event": "setSong",
+    "song": "bumblebee"
+  }
+```
+
+* start: this API is used for telling server to freeze the group and distribute instruments to all musicians.
+
+``` javascript
+  {
+    "event": "start"
+  }
+```
+
 ## API from Mozart to Bach
 
 * joinGroup: the result of the `joinGroup` request. It ships with group information, for example:
@@ -46,7 +63,12 @@
 ```javascript
   {
     "event": "requestRole",
-    "role": "musician"
+    "role": "musician",
+    "group": {
+      "song": "bumblebee",
+      "hasConductor": false,
+      "musicianCount": 1
+    }
   }
 ```
 
@@ -55,8 +77,13 @@
 ```javascript
   {
     "event": "trackInfo",
-    "data": { "name": "bumblebee" },
-    "channels": [ "acoustic_grand_piano", "violin" ]
+    "channels": [ "01", "02" ],
+    "instruments": [ "acoustic_grand_piano", "violin" ],
+    "group": {
+      "song": "bumblebee",
+      "hasConductor": false,
+      "musicianCount": 1
+    }
   }
 ```
 
@@ -66,6 +93,7 @@
   {
     "event": "groupChanged",
     "group": {
+      "song": "bumblebee",
       "hasConductor": false,
       "musicianCount": 2
     }
@@ -85,8 +113,10 @@
 ```javascript
   {
     "event": "noteOn",
-    "note": 94,
-    "velocity": 1
+    "notes": [{
+      "note": 94,
+      "velocity": 1
+    }]
   }
 ```
 
@@ -95,6 +125,8 @@
 ```javascript
   {
     "event": "noteOff",
-    "note": 94
+    "notes": [{
+      "note": 94
+    }]
   }
 ```

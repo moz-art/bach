@@ -6,12 +6,13 @@ import {
   CardText
 } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
-import { PAGE_URL } from '../constants/Constant';
+import { API_EVENTS, PAGE_URL } from '../constants/Constant';
 import {
   CardHeader,
   LoadingMask,
   PinCodeInput
 } from '../components/Common';
+import ServerAPI from '../ws/ServerAPI';
 
 class PinCode extends PureComponent {
 
@@ -21,6 +22,38 @@ class PinCode extends PureComponent {
       code: '',
       loadingMessage: null
     };
+    ServerAPI.on(API_EVENTS.OPENED, this.handleServerOpened);
+    ServerAPI.on(API_EVENTS.GROUP_JOINED, this.handleGroupJoined);
+  }
+
+  handleServerOpened = () => {
+    // the loading message means the user already clicks the submit button.
+    if (!this.state.loadingMessage) {
+      return;
+    }
+
+    this.setState({
+      loadingMessage: 'Joining to a group'
+    }, () => {
+      ServerAPI.joinGroup(this.state.code);
+    });
+  }
+
+  handleGroupJoined = (group) => {
+    this.setState({ loadingMessage: null }, () => {
+      if (group.hasConductor) {
+        this.props.history.push({
+          pathname: PAGE_URL.MUSICIAN,
+          state: { code: this.state.code, group }
+        });
+      } else {
+        this.props.history.push({
+          pathname: PAGE_URL.ROLE_SELECTOR,
+          state: { code: this.code }
+        });
+      }
+
+    });
   }
 
   handlePinCodeInputed = () => {
@@ -29,15 +62,13 @@ class PinCode extends PureComponent {
     this.setState({
       code: this.code,
       loadingMessage: 'Connecting to Server'
+    }, () => {
+      if (!ServerAPI.socketOpened) {
+        ServerAPI.connect();
+      } else {
+        this.handleServerOpened();
+      }
     });
-    setTimeout(() => {
-      this.setState({ loadingMessage: null }, () => {
-        this.props.history.push({
-          pathname: PAGE_URL.ROLE_SELECTOR,
-          state: { code: this.code }
-        });
-      });
-    }, 1500);
   }
 
   handleCodeChanged = (code) => {
