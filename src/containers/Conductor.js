@@ -51,13 +51,14 @@ class Conductor extends PureComponent {
           this.setState({meters, bpm});
           startPosition = null;
           max = 0;
-          step = (step + 1) % 4;
+          step = (step + 1) % steps.length;
         }
       }
     });
   }
 
   onStart = () => {
+    ServerAPI.setSong('pachelbel_canon');
     ServerAPI.start();
   }
 
