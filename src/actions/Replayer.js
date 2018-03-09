@@ -8,6 +8,7 @@ export default (midiFile, midiPlayer) => {
   var stop = false;
   var playing = false;
   var activeChannels = null;
+  var volumes = [];
 
   var allOrderedEvents = [];
   for (var i = 0; i < midiFile.tracks.length; i++) {
@@ -143,7 +144,9 @@ export default (midiFile, midiPlayer) => {
         }
         switch (event.subtype) {
           case 'noteOn':
-            midiPlayer.noteOn(event.channel, event.noteNumber, event.velocity, 0);
+            const velocity = Math.min(event.velocity * volumes[event.channel] * 2, 127);
+            console.log(event.velocity, velocity);
+            midiPlayer.noteOn(event.channel, event.noteNumber, velocity, 0);
             break;
           case 'noteOff':
             midiPlayer.noteOff(event.channel, event.noteNumber, 0);
@@ -188,6 +191,11 @@ export default (midiFile, midiPlayer) => {
     return beatsPerMinute;
   }
 
+  function setVolumes(v) {
+    volumes = v;
+    console.log('volumes', v);
+  }
+
   var self = {
     'setActiveChannels': setActiveChannels,
     'setSpeed': changeSpeed,
@@ -196,7 +204,8 @@ export default (midiFile, midiPlayer) => {
     'stop': stopPlaying,
     'finished': false,
     'finishedCallback': null,
-    'isPlaying': isPlaying
+    'isPlaying': isPlaying,
+    'setVolumes': setVolumes
   };
   return self;
 }

@@ -23,9 +23,10 @@ class Musician extends PureComponent {
       groupCode: props.location.state.group
     };
     // setTimeout(() => {
-    //   this.handleTrackInfo([0, 1, 2, 3],
-    //                        ['violin', 'contrabass'],
-    //                        { song: 'pachelbel_canon' });
+    //   this.handleTrackInfo([0, 1, 2, 3], ['violin', 'contrabass'], {
+    //     song: 'pachelbel_canon',
+    //     volumes: [0.5, 0.5, 0.5, 0.5]
+    //   });
     // }, 1000);
   }
 
@@ -52,26 +53,36 @@ class Musician extends PureComponent {
   }
 
   handleTrackInfo = (channels, instruments, group) => {
-    // let speed = 60;
+    // let speed = 120;
+    // let volume = 0.5;
     this.setState({ instruments });
     Promise.all([downloadMIDI(group.song), initMIDI(instruments)]).then(([midiFile, midi]) => {
       // TODO: intercept information and set the to state.
       this.replayer = new Replayer(midiFile, window.MIDI)
+      this.replayer.setVolumes(group.volumes);
       ServerAPI.musicianReady();
       // setInterval(() => {
-      //   this.handleGroupChanged({ speed });
+      //   this.handleGroupChanged({ speed, volumes: [0.1, 0.1, 0.1, 1] });
       //   if (speed >= 300) {
-      //     speed -= 10;
-      //   } else if (speed >= 60 && speed < 300) {
-      //     speed += 10;
-      //   } else {
       //     speed = 60;
+      //   } else {
+      //     speed += 10;
+      //   }
+
+      //   if (volume > 0.9) {
+      //     volume = 0.5;
+      //   } else {
+      //     volume += 0.1
       //   }
       // }, 1000)
     });
   }
 
   handleGroupChanged = (group) => {
+    if (group && group.volumes) {
+      this.replayer.setVolumes(group.volumes);
+    }
+
     if (group && group.speed) {
       this.replayer.setSpeed(group.speed);
       if (!this.replayer.isPlaying()) {

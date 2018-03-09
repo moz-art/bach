@@ -4,7 +4,7 @@
 	--------------------------------------------
 	https://github.com/mudcube/MIDI.js
 	--------------------------------------------
-	Inspired by javax.sound.midi (albeit a super simple version): 
+	Inspired by javax.sound.midi (albeit a super simple version):
 		http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/package-summary.html
 	--------------------------------------------
 	Technologies:
@@ -74,14 +74,14 @@ var setPlugin = function(root) {
 			output.send([0x90 + channel, note, velocity], delay * 1000);
 		}
 	};
-	
+
 	root.chordOff = function (channel, chord, delay) {
 		for (var n = 0; n < chord.length; n ++) {
 			var note = chord[n];
 			output.send([0x80 + channel, note, 0], delay * 1000);
 		}
 	};
-	
+
 	root.stopAllNotes = function () {
 		for (var channel = 0; channel < 16; channel ++) {
 			output.send([0xB0 + channel, 0x7B, 0]);
@@ -91,7 +91,7 @@ var setPlugin = function(root) {
 	root.getInput = function () {
 		return plugin.getInputs();
 	};
-	
+
 	root.getOutputs = function () {
 		return plugin.getOutputs();
 	};
@@ -179,6 +179,7 @@ if (window.AudioContext) (function () {
 		if (!MIDI.channels[channel]) return;
 		var instrument = MIDI.channels[channel].instrument;
 		if (!audioBuffers[instrument + "" + note]) return;
+		// if (velocity < 0.1) return;
 		/// convert relative delay to absolute delay
 		if (delay < ctx.currentTime) delay += ctx.currentTime;
 		/// crate audio buffer
@@ -196,13 +197,13 @@ if (window.AudioContext) (function () {
 		var gainNode = ctx.createGain();
 		gains[channel + "" + note] = gainNode;
 		var value = (velocity / 127) * (masterVolume / 127) * 2 - 1;
-		gainNode.connect(ctx.destination);
 		gainNode.gain.value = Math.max(-1, value);
+		gainNode.connect(ctx.destination);
 		source.connect(gainNode);
 		if (source.noteOn) {
 			source.noteOn(delay || 0);
 		} else {
-			source.start(delay || 0);	
+			source.start(delay || 0);
 		}
 		return source;
 	};
@@ -211,15 +212,15 @@ if (window.AudioContext) (function () {
 		delay = delay || 0;
 		if (delay < ctx.currentTime) delay += ctx.currentTime;
 		var source = sources[channel + "" + note];
-		var gain = gains[channel + "" + note];
+		// var gain = gains[channel + "" + note];
 		delete gains[channel + "" + note];
 		if (!source) return;
-		gain && gain.gain.linearRampToValueAtTime(1, delay);
-		gain && gain.gain.linearRampToValueAtTime(0, delay + 0.1);
+		// gain && gain.gain.linearRampToValueAtTime(1, delay);
+		// gain && gain.gain.linearRampToValueAtTime(0, delay + 0.1);
 		if (source.noteOff) {
-			source.noteOff(delay + 0.2);
+			source.noteOff(delay);
 		} else {
-			source.stop(delay + 0.2);
+			source.stop(delay);
 		}
 		return source;
 	};
@@ -353,7 +354,7 @@ if (window.webkitAudioContext) (function () {
 		if (delay < ctx.currentTime) delay += ctx.currentTime;
 		var source = sources[channel + "" + note];
 		if (!source) return;
-		// @Miranet: "the values of 0.2 and 0.3 could ofcourse be used as 
+		// @Miranet: "the values of 0.2 and 0.3 could ofcourse be used as
 		// a 'release' parameter for ADSR like time settings."
 		// add { "metadata": { release: 0.3 } } to soundfont files
 		source.gain.linearRampToValueAtTime(1, delay);
@@ -416,7 +417,7 @@ if (window.Audio) (function () {
 		api: "audiotag"
 	};
 	var note2id = {};
-	var volume = 127; // floating point 
+	var volume = 127; // floating point
 	var channel_nid = -1; // current channel
 	var channels = []; // the audio channels
 	var channelInstrumentNoteIds = []; // instrumentId + noteId that is currently playing in each 'channel', for routing noteOff/chordOff calls
@@ -434,6 +435,7 @@ if (window.Audio) (function () {
 		var instrumentNoteId = instrumentId + "" + note.id;
 		var nid = (channel_nid + 1) % channels.length;
 		var audio = channels[nid];
+		if (!volume) return;
 		channelInstrumentNoteIds[ nid ] = instrumentNoteId;
 		audio.src = MIDI.Soundfont[instrumentId][note.id];
 		audio.volume = volume / 127;
@@ -480,7 +482,7 @@ if (window.Audio) (function () {
 			playChannel(channel, id);
 		}
 	};
-	
+
 	root.noteOff = function (channel, note, delay) {
 		var id = note2id[note];
 		if (!notes[id]) return;
@@ -492,7 +494,7 @@ if (window.Audio) (function () {
 			stopChannel(channel, id);
 		}
 	};
-	
+
 	root.chordOn = function (channel, chord, velocity, delay) {
 		for (var idx = 0; idx < chord.length; idx ++) {
 			var n = chord[idx];
@@ -507,7 +509,7 @@ if (window.Audio) (function () {
 			}
 		}
 	};
-	
+
 	root.chordOff = function (channel, chord, delay) {
 		for (var idx = 0; idx < chord.length; idx ++) {
 			var n = chord[idx];
@@ -522,13 +524,13 @@ if (window.Audio) (function () {
 			}
 		}
 	};
-	
+
 	root.stopAllNotes = function () {
 		for (var nid = 0, length = channels.length; nid < length; nid++) {
 			channels[nid].pause();
 		}
 	};
-	
+
 	root.connect = function (conf) {
 		for (var key in MIDI.keyToNote) {
 			note2id[MIDI.keyToNote[key]] = key;
@@ -549,7 +551,7 @@ if (window.Audio) (function () {
 	http://www.schillmania.com/projects/soundmanager2/
 	--------------------------------------------
 */
-	
+
 (function () {
 
 	var root = MIDI.Flash = {
@@ -573,7 +575,7 @@ if (window.Audio) (function () {
 		note = id + "" + noteReverse[note];
 		if (!notes[note]) return;
 		if (delay) {
-			return window.setTimeout(function() { 
+			return window.setTimeout(function() {
 				notes[note].play({ volume: velocity * 2 });
 			}, delay * 1000);
 		} else {
@@ -624,12 +626,12 @@ if (window.Audio) (function () {
 					multiShot: true,
 					autoLoad: true,
 					onload: onload
-				});			
+				});
 			};
 			var loaded = [];
 			var samplesPerInstrument = 88;
 			var samplesToLoad = instruments.length * samplesPerInstrument;
-				
+
 			for (var i = 0; i < instruments.length; i++) {
 				var instrument = instruments[i];
 				var onload = function () {
@@ -682,8 +684,8 @@ MIDI.GeneralMIDI = (function (arr, sustainablearr) {
 			var num = parseInt(instrument.substr(0, instrument.indexOf(" ")), 10);
 			var sustainable = sustainablearr.indexOf(num) != -1;
 			instrument = instrument.replace(num + " ", "");
-			ret.byId[--num] = 
-			ret.byName[clean(instrument)] = 
+			ret.byId[--num] =
+			ret.byName[clean(instrument)] =
 			ret.byCategory[clean(key)] = {
 				id: clean(instrument),
 				instrument: instrument,
