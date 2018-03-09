@@ -5,11 +5,9 @@ export default (midiFile, midiPlayer) => {
   var speed = 1;
   var nextEventInfo;
   var secondsToNextEvent = -1;
-  var timerID;
-  var startTime;
   var stop = false;
+  var playing = false;
   var activeChannels = null;
-  var started = false;
 
   var allOrderedEvents = [];
   for (var i = 0; i < midiFile.tracks.length; i++) {
@@ -92,7 +90,7 @@ export default (midiFile, midiPlayer) => {
 
   function finish() {
     self.finished = true;
-    midiPlayer.stopAllNotes();
+    midiPlayer.stopAllNotes && midiPlayer.stopAllNotes();
     if (self.finishedCallback) {
       self.finishedCallback();
     }
@@ -126,18 +124,17 @@ export default (midiFile, midiPlayer) => {
     if (secondsToNextEvent < 0) {
       return;
     }
-    startTime = (new Date()).getTime();
     var nTimeSpan = secondsToNextEvent * 1000 * speed;
-    timerID = window.setTimeout(scheduleNextTimer, nTimeSpan);
+    window.setTimeout(scheduleNextTimer, nTimeSpan);
   }
 
   function handleEvent() {
     var event = nextEventInfo.event;
     switch (event.type) {
       case 'meta':
-        if (event.subtype === 'setTempo') {
-          beatsPerMinute = 60000000 / event.microsecondsPerBeat
-        }
+        // if (event.subtype === 'setTempo') {
+        //   beatsPerMinute = 60000000 / event.microsecondsPerBeat
+        // }
         break;
       case 'channel':
         if (activeChannels !== null && activeChannels !== undefined &&
@@ -162,7 +159,7 @@ export default (midiFile, midiPlayer) => {
   }
 
   function replay() {
-    started = true;
+    playing = true;
     scheduleNextTimer();
   }
 
@@ -170,17 +167,17 @@ export default (midiFile, midiPlayer) => {
     stop = true;
   }
 
-  function changeSpeed(spd) {
-    if (spd < 0.1 || !started) {
+  function isPlaying() {
+    return playing;
+  }
+
+  function changeSpeed(bpm) {
+    if (bpm < 10) {
       return;
     }
 
-    var elapsedTime = ((new Date()).getTime() - startTime) / speed;
-    speed = spd;
-    var diff = secondsToNextEvent * 1000 - elapsedTime;
-    window.clearTimeout(timerID);
-    timerID = window.setTimeout(scheduleNextTimer, diff * speed);
-    console.log('speed: ', speed);
+    beatsPerMinute = bpm;
+    console.log('bpm: ', bpm);
   }
 
   function setActiveChannels(channels) {
@@ -188,17 +185,18 @@ export default (midiFile, midiPlayer) => {
   }
 
   function getSpeed() {
-    return speed;
+    return beatsPerMinute;
   }
 
   var self = {
     'setActiveChannels': setActiveChannels,
-    'changeSpeed': changeSpeed,
+    'setSpeed': changeSpeed,
     'getSpeed': getSpeed,
     'replay': replay,
     'stop': stopPlaying,
     'finished': false,
-    'finishedCallback': null
+    'finishedCallback': null,
+    'isPlaying': isPlaying
   };
   return self;
 }

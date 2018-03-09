@@ -9,7 +9,8 @@ export const WS_EVENTS = {
   REQUEST_ROLE: 'requestRole',
   SET_SPEED: 'setSpeed',
   SET_SONG: 'setSong',
-  START: 'start'
+  START: 'start',
+  TRACK_INFO: 'trackInfo'
 };
 
 export const ROLE_TYPE = {

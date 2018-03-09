@@ -22,12 +22,11 @@ class Musician extends PureComponent {
       noteText: '??',
       groupCode: props.location.state.group
     };
-    console.log('wait 1 sec to initialize');
-    setTimeout(() => {
-      this.handleTrackInfo([0, 1, 2, 3],
-                           ['violin', 'contrabass'],
-                           { song: 'pachelbel_canon' });
-    }, 1000);
+    // setTimeout(() => {
+    //   this.handleTrackInfo([0, 1, 2, 3],
+    //                        ['violin', 'contrabass'],
+    //                        { song: 'pachelbel_canon' });
+    // }, 1000);
   }
 
   componentDidMount = () => {
@@ -39,10 +38,12 @@ class Musician extends PureComponent {
     }
 
     ServerAPI.on(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
+    ServerAPI.on(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
   }
 
   componentWillUnmount = () => {
     ServerAPI.off(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
+    ServerAPI.off(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
   }
 
   isReady = () => {
@@ -51,16 +52,32 @@ class Musician extends PureComponent {
   }
 
   handleTrackInfo = (channels, instruments, group) => {
+    // let speed = 60;
     this.setState({ instruments });
     Promise.all([downloadMIDI(group.song), initMIDI(instruments)]).then(([midiFile, midi]) => {
       // TODO: intercept information and set the to state.
       this.replayer = new Replayer(midiFile, window.MIDI)
       ServerAPI.musicianReady();
-      console.log('wait for 1 sec before playing');
-      setTimeout(() => {
-        this.replayer.replay();
-      })
+      // setInterval(() => {
+      //   this.handleGroupChanged({ speed });
+      //   if (speed >= 300) {
+      //     speed -= 10;
+      //   } else if (speed >= 60 && speed < 300) {
+      //     speed += 10;
+      //   } else {
+      //     speed = 60;
+      //   }
+      // }, 1000)
     });
+  }
+
+  handleGroupChanged = (group) => {
+    if (group && group.speed) {
+      this.replayer.setSpeed(group.speed);
+      if (!this.replayer.isPlaying()) {
+        this.replayer.replay();
+      }
+    }
   }
 
   render = () => {
