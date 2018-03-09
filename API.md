@@ -97,7 +97,7 @@
 ```javascript
   {
     "event": "trackInfo",
-    "channels": [ "01", "02" ],
+    "channels": [ 0, 1 ],
     "instruments": [ "acoustic_grand_piano", "violin" ],
     "group": {
       "song": "bumblebee",
