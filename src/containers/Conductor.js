@@ -57,6 +57,10 @@ class Conductor extends PureComponent {
     });
   }
 
+  onStart = () => {
+    ServerAPI.start();
+  }
+
   renderMeters() {
     return this.state.meters
       .map((meter, i) => <div key={i}>{meter.step}: {meter.duration}</div>);
@@ -69,6 +73,7 @@ class Conductor extends PureComponent {
     }
     return (
       <div>
+        <button onClick={this.onStart}>Start</button>
         <p>
           BPM: {this.state.bpm}
         </p>
