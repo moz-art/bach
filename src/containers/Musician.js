@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
 import MusicianCard from '../components/MusicianCard';
-import { PAGE_URL, NOTE_MAP } from '../constants/Constant';
+import {
+  API_EVENTS,
+  PAGE_URL
+} from '../constants/Constant';
 import ServerAPI from '../ws/ServerAPI';
-
-const TEST_SCORE = [32, 28, 28, 30, 26, 26, 24, 26, 28, 30, 32, 32];
+import { initMIDI, downloadMIDI } from '../actions/MidiFile';
+import Replayer from '../actions/Replayer';
 
 class Musician extends PureComponent {
 
@@ -15,13 +18,15 @@ class Musician extends PureComponent {
     this.state = {
       activeInstrumentIndex: 0,
       activeNote: -1,
-      instruments: ['acoustic_grand_piano'], // null,
-      noteText: '',
-      group: props.location.state.group
+      instruments: null,
+      noteText: '??',
+      groupCode: props.location.state.group
     };
-
+    console.log('wait 1 sec to initialize');
     setTimeout(() => {
-      this.initMIDI();
+      this.handleTrackInfo([0, 1, 2, 3],
+                           ['violin', 'contrabass'],
+                           { song: 'pachelbel_canon' });
     }, 1000);
   }
 
@@ -32,6 +37,12 @@ class Musician extends PureComponent {
       history.replace(PAGE_URL.PIN_CODE);
       return;
     }
+
+    ServerAPI.on(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
+  }
+
+  componentWillUnmount = () => {
+    ServerAPI.off(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
   }
 
   isReady = () => {
@@ -39,40 +50,17 @@ class Musician extends PureComponent {
     return location.state && location.state.code && location.state.group && ServerAPI.ready
   }
 
-  initMIDI = () => {
-    const { instruments } = this.state;
-    window.MIDI.loadPlugin({
-      soundfontUrl: "/MIDI.js/soundfont/",
-      instruments: instruments,
-      callback: () => {
-        ServerAPI.musicianReady();
-        const activeNote = TEST_SCORE.shift();
-        this.setState({
-          activeNote,
-          noteText: NOTE_MAP[activeNote]
-        }, this.play);
-      }
+  handleTrackInfo = (channels, instruments, group) => {
+    this.setState({ instruments });
+    Promise.all([downloadMIDI(group.song), initMIDI(instruments)]).then(([midiFile, midi]) => {
+      // TODO: intercept information and set the to state.
+      this.replayer = new Replayer(midiFile, window.MIDI)
+      ServerAPI.musicianReady();
+      console.log('wait for 1 sec before playing');
+      setTimeout(() => {
+        this.replayer.replay();
+      })
     });
-  }
-
-  play = () => {
-    const { activeNote } = this.state;
-    window.MIDI.noteOn(0, activeNote, 68, 0);
-    if (TEST_SCORE.length) {
-      setTimeout(() => {
-        const nextNote = TEST_SCORE.shift();
-        // off the previous one
-        window.MIDI.noteOff(0, activeNote, 0);
-        this.setState({
-          activeNote: nextNote,
-          noteText: NOTE_MAP[nextNote]
-        }, this.play);
-      }, 1000);
-    } else {
-      setTimeout(() => {
-        window.MIDI.noteOff(0, activeNote, 0);
-      }, 1000);
-    }
   }
 
   render = () => {

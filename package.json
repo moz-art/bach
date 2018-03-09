@@ -5,6 +5,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "eventemitter3": "^3.0.1",
+    "jasmid-module": "^1.2.0",
     "leapjs": "^0.6.4",
     "react": "^16.2.0",
     "react-code-input": "^3.0.0",
