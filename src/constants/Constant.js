@@ -9,6 +9,8 @@ export const WS_EVENTS = {
   REQUEST_ROLE: 'requestRole',
   SET_SPEED: 'setSpeed',
   SET_SONG: 'setSong',
+  SET_VOLUME: 'setVolume',
+  SONG_INFO: 'songInfo',
   START: 'start',
   TRACK_INFO: 'trackInfo'
 };
@@ -27,6 +29,7 @@ export const API_EVENTS = {
   GROUP_NOTE_OFF: 'noteOff',
   GROUP_NOTE_ON: 'noteOn',
   GROUP_TRACK_INFO: 'trackInfo',
+  SONG_INFO: 'songInfo',
   OPENED: 'opened',
   ROLE_RESULT: 'requestRoleResult'
 };

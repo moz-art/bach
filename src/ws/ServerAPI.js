@@ -78,6 +78,9 @@ export class ServerAPI extends EventEmitter {
       case WS_EVENTS.NOTE_OFF:
         this.emit(API_EVENTS.GROUP_NOTE_OFF, data.notes);
         break;
+      case WS_EVENTS.SONG_INFO:
+        this.emit(API_EVENTS.SONG_INFO, data.song, data.tracks);
+        break;
       default:
         console.error('unsupported event', msg);
     }
@@ -117,6 +120,14 @@ export class ServerAPI extends EventEmitter {
       song
     });
   }
+
+  setVolume = (channel, volume) => {
+    this.sendMessage({
+      event: WS_EVENTS.SET_VOLUME,
+      channel,
+      volume
+    });
+  };
 
   start = (song) => {
     this.sendMessage({ event: WS_EVENTS.START });

@@ -160,7 +160,7 @@
 ```javascript
   {
     "event": "songInfo",
-    "song": "",
+    "song": "bumblebee",
     "tracks": [['acoustic_grand_piano'], ['acoustic_grand_piano']]
     }
   }
