@@ -10,7 +10,8 @@ class Conductor extends PureComponent {
     super(props);
 
     this.state = {
-      meters: []
+      meters: [],
+      bpm: 0
     };
   }
   componentDidMount () {
@@ -45,7 +46,9 @@ class Conductor extends PureComponent {
           const duration = ((frame.timestamp - previousTimestamp) / 1000).toFixed(0);
           const meters = this.state.meters.slice();
           meters.push({ step: steps[step], duration });
-          this.setState({meters});
+          const bpm = Math.floor(60 / (duration / 1000));
+          ServerAPI.setSpeed(bpm);
+          this.setState({meters, bpm});
           startPosition = null;
           max = 0;
           step = (step + 1) % 4;
@@ -66,6 +69,9 @@ class Conductor extends PureComponent {
     }
     return (
       <div>
+        <p>
+          BPM: {this.state.bpm}
+        </p>
         {this.renderMeters()}
       </div>
     );

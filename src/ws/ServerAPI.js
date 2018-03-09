@@ -118,7 +118,7 @@ export class ServerAPI extends EventEmitter {
     });
   }
 
-  setSong = (song) => {
+  start = (song) => {
     this.sendMessage({ event: WS_EVENTS.START });
   }
 
