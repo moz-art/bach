@@ -36,7 +36,7 @@
   }
 ```
 
-* setVolume: this API is used for telling server the volumne of specific channel.
+* setVolume: this API is used for telling server the volume of specific channel.
 
 ``` javascript
   {
@@ -104,7 +104,7 @@
       "hasConductor": true,
       "musicianCount": 1,
       "readyCount": 0,
-      "volumns": [0.5, 0.5, 05, 0.5]
+      "volumes": [0.5, 0.5, 05, 0.5]
     }
   }
 ```
@@ -119,7 +119,7 @@
       "hasConductor": true,
       "musicianCount": 2,
       "readyCount": 1,
-      "volumns": [0.5, 0.5, 0.7, 0.2]
+      "volumes": [0.5, 0.5, 0.7, 0.2]
     }
   }
 ```
