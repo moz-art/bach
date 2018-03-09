@@ -36,6 +36,16 @@
   }
 ```
 
+* setVolume: this API is used for telling server the volumne of specific channel.
+
+``` javascript
+  {
+    "event": "setVolume",
+    "channel": 1,
+    "volume": 0.7
+  }
+```
+
 * start: this API is used for telling server to freeze the group and distribute instruments to all musicians.
 
 ``` javascript
@@ -93,7 +103,8 @@
       "song": "bumblebee",
       "hasConductor": true,
       "musicianCount": 1,
-      "readyCount": 0
+      "readyCount": 0,
+      "volumns": [0.5, 0.5, 05, 0.5]
     }
   }
 ```
@@ -107,7 +118,8 @@
       "song": "bumblebee",
       "hasConductor": true,
       "musicianCount": 2,
-      "readyCount": 1
+      "readyCount": 1,
+      "volumns": [0.5, 0.5, 0.7, 0.2]
     }
   }
 ```
@@ -140,5 +152,16 @@
     "notes": [{
       "note": 94
     }]
+  }
+```
+
+* songInfo: songInfo is the event to tell conductor the song information he/she chose.
+
+```javascript
+  {
+    "event": "songInfo",
+    "song": "",
+    "tracks": [['acoustic_grand_piano'], ['acoustic_grand_piano']]
+    }
   }
 ```
