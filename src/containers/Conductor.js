@@ -85,6 +85,7 @@ class Conductor extends PureComponent {
           if ((direction > 0 && nextVolume > currentVolume) ||
             (direction <= 0 && nextVolume <= currentVolume)) {
             volumes[currentPart] = nextVolume;
+            ServerAPI.setVolume(currentPart, nextVolume);
           }
 
           this.setState({currentPart, volumes});
