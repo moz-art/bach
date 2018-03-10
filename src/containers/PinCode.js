@@ -6,7 +6,11 @@ import {
   CardText
 } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
-import { API_EVENTS, PAGE_URL } from '../constants/Constant';
+import {
+  API_EVENTS,
+  PAGE_URL,
+  ROLE_TYPE
+} from '../constants/Constant';
 import {
   CardHeader,
   LoadingMask,
@@ -50,6 +54,7 @@ class PinCode extends PureComponent {
   handleGroupJoined = (group) => {
     this.setState({ loadingMessage: null }, () => {
       if (group.hasConductor) {
+        ServerAPI.requestRole(ROLE_TYPE.MUSICIAN)
         this.props.history.push({
           pathname: PAGE_URL.MUSICIAN,
           state: { code: this.state.code, group }
@@ -91,7 +96,7 @@ class PinCode extends PureComponent {
     return (
       <Card>
         {loadingMessage && <LoadingMask>{loadingMessage}</LoadingMask>}
-        <CardHeader>Pin Code</CardHeader>
+        <CardHeader>Group Code</CardHeader>
         <CardBody>
           <PinCodeInput
             disabled={!!loadingMessage}
@@ -99,7 +104,7 @@ class PinCode extends PureComponent {
             type='number'
             value={code}
             onChange={this.handleCodeChanged} />
-          <CardText>Note: All people with the same Pin Code will join the same group</CardText>
+          <CardText>Note: All people with the same Group Code will be the same group</CardText>
           <Button
             block
             color='primary'
