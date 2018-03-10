@@ -28,6 +28,11 @@ class Musician extends PureComponent {
     //     volumes: [0.5, 0.5, 0.5, 0.5]
     //   });
     // }, 1000);
+
+    // setTimeout(() => {
+    //   ServerAPI.setSong('pachelbel_canon');
+    //   ServerAPI.start();
+    // }, 1000)
   }
 
   componentDidMount = () => {
@@ -79,11 +84,11 @@ class Musician extends PureComponent {
   }
 
   handleGroupChanged = (group) => {
-    if (group && group.volumes) {
+    if (group && group.volumes && this.replayer) {
       this.replayer.setVolumes(group.volumes);
     }
 
-    if (group && group.speed) {
+    if (group && group.speed && this.replayer) {
       this.replayer.setSpeed(group.speed);
       if (!this.replayer.isPlaying()) {
         this.replayer.replay();
