@@ -3,9 +3,33 @@ import Leap from 'leapjs';
 import styled from 'styled-components';
 
 import { PAGE_URL } from '../constants/Constant';
-import ServerAPI from '../ws/ServerAPI';
+// import ServerAPI from '../ws/ServerAPI';
+
+const ServerAPI = {
+  setSong: () => {},
+  setSpeed: () => {},
+  setVolume: () => {},
+  start: () => {},
+  ready: true
+};
 
 const POSITION_THRESHOLD = 100;
+
+const GridContainer = styled.div`
+  min-height: 500px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+`;
+
+const Controls = styled.div`
+  grid-column-start: 1;
+  grid-column-end: 3;
+  align-self: center;
+  justify-self: center;
+`
+
+const Metronome = styled.div``;
 
 const Parts = styled.div`
   display: flex;
@@ -13,7 +37,14 @@ const Parts = styled.div`
 
 const Part = styled.div`
   flex: auto;
-  background-color: ${props => props.current ? 'red' : 'white'};
+  margin: 10px;
+  text-align: center;
+  background: ${props => {
+    const percent = 1 - props.percent;
+    const color = props.current ? '#99be8f' : '#4e8064';
+    let gradient = `linear-gradient(white ${percent * 100}%, ${color} ${percent * 100}%)`
+    return gradient;
+  }};
 `;
 
 class Conductor extends PureComponent {
@@ -24,16 +55,20 @@ class Conductor extends PureComponent {
       meters: [],
       bpm: 0,
       currentPart: 0,
-      volumes: [0.5, 0.5, 0.5, 0.5]
+      volumes: [0.5, 0.5, 0.5, 0.5],
+      palmPosition: {
+        x: 0,
+        y: 0
+      }
     };
   }
   componentDidMount () {
-    const { location, history } = this.props;
-    if (!location.state || !location.state.code || !ServerAPI.ready) {
-      // no code no show.
-      history.replace(PAGE_URL.PIN_CODE);
-      return;
-    }
+    // const { location, history } = this.props;
+    // if (!location.state || !location.state.code || !ServerAPI.ready) {
+    //   // no code no show.
+    //   history.replace(PAGE_URL.PIN_CODE);
+    //   return;
+    // }
 
     const steps = ['down', 'left', 'right', 'up'];
     const axis = [1, 0, 0, 1];
@@ -54,6 +89,15 @@ class Conductor extends PureComponent {
             startPosition = hands.right.palmPosition;
             previousTimestamp = frame.timestamp;
           }
+
+          console.log(hands.right.palmPosition);
+
+          const palmPosition = {
+            x: hands.right.palmPosition[0],
+            y: hands.right.palmPosition[1]
+          };
+
+          this.setState({ palmPosition});
 
           const currentPosition = hands.right.palmPosition;
 
@@ -85,7 +129,7 @@ class Conductor extends PureComponent {
           if ((direction > 0 && nextVolume > currentVolume) ||
             (direction <= 0 && nextVolume <= currentVolume)) {
             volumes[currentPart] = nextVolume;
-            ServerAPI.setVolume(currentPart, nextVolume);
+            // ServerAPI.setVolume(currentPart, nextVolume);
           }
 
           this.setState({currentPart, volumes});
@@ -106,26 +150,54 @@ class Conductor extends PureComponent {
 
   renderParts () {
     return new Array(this.state.volumes.length).fill(0).map((_, index) => {
-      return <Part current={this.state.currentPart === index} key={index}>{this.state.volumes[index]}</Part>
+      const val = this.state.volumes[index].toFixed(3);
+      return <Part percent={val} current={this.state.currentPart === index} key={index}>{val}</Part>
     });
   }
 
   render() {
-    if (!this.props.location.state || !this.props.location.state.code || !ServerAPI.ready) {
-      // no code no show.
-      return null;
-    }
+    // if (!this.props.location.state || !this.props.location.state.code || !ServerAPI.ready) {
+    //   // no code no show.
+    //   return null;
+    // }
+
+    const svgWidth = 400;
+    const svgHeight = 400;
+    const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
+    const mappingRatio = 1.5;
+    const x = this.state.palmPosition.x * mappingRatio;
+    const y = svgHeight - (this.state.palmPosition.y * mappingRatio) + 300;
     return (
-      <div>
-        <button onClick={this.onStart}>Start</button>
-        <p>
-          BPM: {this.state.bpm}
-        </p>
+      <GridContainer>
+        <Controls>
+          <button onClick={this.onStart}>Start</button>
+        </Controls>
         <Parts>
           {this.renderParts()}
         </Parts>
-        {this.renderMeters()}
-      </div>
+        <Metronome>
+          <p>
+            BPM: {this.state.bpm}
+            <svg width={svgWidth} height={svgHeight} viewBox={viewBox}
+              xmlns="http://www.w3.org/2000/svg">
+
+              <circle id="palm-position" cx={x} cy={y} r="10" />
+
+              <line x1="200" y1="20" x2="200" y2="380"
+                strokeWidth="2" stroke="black" />
+
+              <line x1="180" y1="360" x2="20" y2="200"
+                strokeWidth="2" stroke="black" />
+
+              <line x1="40" y1="200" x2="380" y2="200"
+                strokeWidth="2" stroke="black" />
+
+              <line x1="360" y1="180" x2="220" y2="20"
+                strokeWidth="2" stroke="black" />
+            </svg>
+          </p>
+        </Metronome>
+      </GridContainer>
     );
   }
 }
