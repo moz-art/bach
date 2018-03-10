@@ -82,8 +82,8 @@ class Conductor extends PureComponent {
           const currentVolume = volumes[currentPart];
 
           // palm face to up
-          if (direction > 0 && nextVolume > currentVolume ||
-            direction <= 0 && nextVolume <= currentVolume) {
+          if ((direction > 0 && nextVolume > currentVolume) ||
+            (direction <= 0 && nextVolume <= currentVolume)) {
             volumes[currentPart] = nextVolume;
           }
 
