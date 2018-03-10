@@ -145,7 +145,6 @@ export default (midiFile, midiPlayer) => {
         switch (event.subtype) {
           case 'noteOn':
             const velocity = Math.min(event.velocity * volumes[event.channel] * 2, 127);
-            console.log(event.velocity, velocity);
             midiPlayer.noteOn(event.channel, event.noteNumber, velocity, 0);
             break;
           case 'noteOff':

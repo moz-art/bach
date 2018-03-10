@@ -23,7 +23,7 @@ class MusicianCard extends PureComponent {
 
   static propTypes = {
     activeInstrumentIndex: PropTypes.number,
-    note: PropTypes.string,
+    note: PropTypes.object,
     instruments: PropTypes.arrayOf(PropTypes.oneOf(INSTRUMENTS)),
     title: PropTypes.string
   };
@@ -60,7 +60,9 @@ class MusicianCard extends PureComponent {
         {this.renderBackground()}
         <CenteredImgOverlay>
           <CardTitle>{this.renderInstrumentText()}</CardTitle>
-          <NoteText>{note}</NoteText>
+          <NoteText sharp={note && note.sharp} octave={note && note.octave}>
+            {note ? note.base : ''}
+          </NoteText>
         </CenteredImgOverlay>
       </CenteredCard>
     );

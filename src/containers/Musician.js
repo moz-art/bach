@@ -4,6 +4,7 @@ import {
   API_EVENTS,
   PAGE_URL
 } from '../constants/Constant';
+import NOTE_MAP from '../constants/NoteMap.json';
 import ServerAPI from '../ws/ServerAPI';
 import { initMIDI, downloadMIDI } from '../actions/MidiFile';
 import Replayer from '../actions/Replayer';
@@ -19,7 +20,7 @@ class Musician extends PureComponent {
       activeInstrumentIndex: 0,
       activeNote: -1,
       instruments: null,
-      noteText: '??',
+      note: null,
       groupCode: props.location.state.group
     };
     // setTimeout(() => {
@@ -63,7 +64,21 @@ class Musician extends PureComponent {
     this.setState({ instruments });
     Promise.all([downloadMIDI(group.song), initMIDI(instruments)]).then(([midiFile, midi]) => {
       // TODO: intercept information and set the to state.
-      this.replayer = new Replayer(midiFile, window.MIDI)
+      this.replayer = new Replayer(midiFile, {
+        noteOn: (channel, note, velocity, delay) => {
+          window.MIDI.noteOn(channel, note, velocity, delay);
+          this.setState({
+            activeNote: note,
+            note: NOTE_MAP[note]
+          });
+        },
+        noteOff: (channel, note, delay) => {
+          window.MIDI.noteOff(channel, note, delay);
+        },
+        programChange: (channel, program) => {
+          window.MIDI.programChange(channel, program);
+        }
+      })
       this.replayer.setVolumes(group.volumes);
       ServerAPI.musicianReady();
       // setInterval(() => {
@@ -105,13 +120,13 @@ class Musician extends PureComponent {
     const {
       activeInstrumentIndex,
       instruments,
-      noteText
+      note
     } = this.state;
     return (
       <MusicianCard
         activeInstrumentIndex={activeInstrumentIndex}
         instruments={instruments}
-        note={noteText}
+        note={note}
         title='Musician'
       />
     );

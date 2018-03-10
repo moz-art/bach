@@ -67,14 +67,37 @@ export const FullSizeCardText = styled(BaseCardText)`
   flex: 1 1 auto;
 `;
 
-export const NoteText = styled(BaseCardText)`
+export const NoteText = styled(({sharp, octave, ...props}) => (<BaseCardText {...props} />))`
   align-self: center;
   text-align: center;
   margin-top: auto;
   &.card-text {
     margin-bottom: auto;
   }
-  font-size: xx-large;
+  font-size: 96pt;
+  position: relative;
+  padding-right: 0.5em;
+
+  &:before {
+    content: '${props => props.octave}';
+    position: absolute;
+    right: 0;
+    bottom: 0.1em;
+    vertical-align: sub;
+    font-size: 50%;
+  }
+  ${props => (
+    !props.sharp ? '' : `
+      &:after {
+        content: '#';
+        position: absolute;
+        top: 0.1em;
+        right: 0;
+        vertical-align: super;
+        font-size: 50%;
+      }
+    `
+  )}
 `;
 
 export const Card = styled(({ maxHeight, maxWidth, ...props }) => (<BaseCard {...props} />))`
