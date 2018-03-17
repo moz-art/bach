@@ -8,7 +8,6 @@ import {
   NoteText
 } from './Common';
 import {
-  INSTRUMENTS,
   INSTRUMENT_IMGS,
   INSTRUMENT_TEXT
 } from '../constants/Instruments';
@@ -22,22 +21,26 @@ const InstrumentImg = ({ instrument, ...rest}) => {
 class MusicianCard extends PureComponent {
 
   static propTypes = {
-    activeInstrumentIndex: PropTypes.number,
+    activeChannelIndex: PropTypes.number,
     note: PropTypes.object,
-    instruments: PropTypes.arrayOf(PropTypes.oneOf(INSTRUMENTS)),
+    instruments: PropTypes.array,
     title: PropTypes.string
   };
 
   static defaultProps = {
-    activeInstrumentIndex: 0,
+    activeChannelIndex: 0,
     title: ''
   };
 
   renderBackground() {
-    const { activeInstrumentIndex, instruments } = this.props;
+    const { activeChannelIndex, instruments } = this.props;
     if (instruments) {
-      const intrument = instruments[activeInstrumentIndex];
-      return (<InstrumentImg width='100%' instrument={intrument} alt={intrument} />);
+      const data = instruments.find((data) => (data.channel === activeChannelIndex));
+      console.log('activeChannel', activeChannelIndex, data.instruments[0]);
+      const alt = INSTRUMENT_TEXT[data.instruments[0]];
+      return (
+        <InstrumentImg width='100%' instrument={data.instruments[0]} alt={alt} />
+      );
     } else {
       return (<CardImg maxHeight='500px' width='100%' src={musicianImg} alt='musician' />);
     }
@@ -48,8 +51,8 @@ class MusicianCard extends PureComponent {
     if (!instruments || !instruments.length) {
       return title;
     }
-    const instrumentsText = instruments.map((i, idx) => {
-      return `${INSTRUMENT_TEXT[i]}(${idx + 1})`;
+    const instrumentsText = instruments.map((data) => {
+      return `${INSTRUMENT_TEXT[data.instruments[0]]}(${data.channel + 1})`;
     }).join(', ');
     return `${title} - ${instrumentsText}`;
   }

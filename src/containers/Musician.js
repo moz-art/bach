@@ -16,7 +16,7 @@ class Musician extends PureComponent {
       return;
     }
     this.state = {
-      activeInstrumentIndex: 0,
+      activeChannelIndex: 0,
       activeNote: -1,
       instruments: null,
       note: null,
@@ -62,8 +62,9 @@ class Musician extends PureComponent {
     if (this.state.channels.indexOf(note.channel) > -1) {
       window.MIDI.noteOn(note.channel, note.note, note.velocity, 0);
       this.setState({
-        activeNote: note,
-        note: NOTE_MAP[note]
+        activeChannelIndex: note.channel,
+        activeNote: note.note,
+        note: NOTE_MAP[note.note]
       });
     }
   }
@@ -77,8 +78,15 @@ class Musician extends PureComponent {
   }
 
   handleTrackInfo = (channels, instruments, group) => {
-    this.setState({ channels, instruments });
-    initMIDI(instruments).then(() => {
+    this.setState({
+      activeChannelIndex: channels[0],
+      channels,
+      instruments
+    });
+    const instrumentsData = instruments.reduce((acc, data) => (
+      acc.concat(data.instruments[0])
+    ), []);
+    initMIDI(instrumentsData).then(() => {
       ServerAPI.musicianReady();
     });
   }
@@ -90,13 +98,13 @@ class Musician extends PureComponent {
     }
 
     const {
-      activeInstrumentIndex,
+      activeChannelIndex,
       instruments,
       note
     } = this.state;
     return (
       <MusicianCard
-        activeInstrumentIndex={activeInstrumentIndex}
+        activeChannelIndex={activeChannelIndex}
         instruments={instruments}
         note={note}
         title='Musician'
