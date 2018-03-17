@@ -6,6 +6,7 @@ import { PAGE_URL, API_EVENTS } from '../constants/Constant';
 import { INSTRUMENT_TEXT } from '../constants/Instruments';
 import ServerAPI from '../ws/ServerAPI';
 import fakeFrames from '../constants/fakeFrames';
+import FileSaver from 'file-saver';
 
 // const ServerAPI = {
 //   setSong: () => {},
@@ -71,6 +72,7 @@ class Conductor extends PureComponent {
     super(props);
 
     this.bpmHistory = [];
+    this.frames = [];
     this.state = {
       meters: [],
       bpm: 0,
@@ -90,6 +92,18 @@ class Conductor extends PureComponent {
       frame.hands.forEach(hand => {
         hands[hand.type] = hand;
       });
+
+      if (hands.left || hands.right) {
+        const jsonFrame = {timestamp: frame.timestamp};
+        jsonFrame.hands = frame.hands.map(hand => {
+          return {
+            palmPosition: hand.palmPosition,
+            palmNormal: hand.palmNormal,
+            type: hand.type
+          }
+        });
+        this.frames.push(jsonFrame);
+      }
 
       if (hands.right) {
         if (!this.startPosition) {
@@ -178,19 +192,32 @@ class Conductor extends PureComponent {
     ServerAPI.start();
   }
 
-  playDummy = () => {
-    let i = 0;
-    const interval = 10;
-    const callback = () => {
-      const frame = fakeFrames[i];
-      if (frame) {
-        this.onFrameFire(frame);
-        i++;
-        setTimeout(callback, interval);
-      }
-    }
+  saveAs = () => {
+    FileSaver.saveAs(new Blob([JSON.stringify(this.frames)], { type: 'application/json' }), `mozart-${Date.now()}.json`);
+  }
 
-    setTimeout(callback, interval);
+  loadFile = (files) => {
+    if (files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.addEventListener('load', file => {
+        const frames = JSON.parse(file.target.result);
+        let i = 0;
+        const interval = 10;
+        const callback = () => {
+          const frame = frames[i];
+          if (frame) {
+            this.onFrameFire(frame);
+            i++;
+            setTimeout(callback, interval);
+          }
+        }
+
+        setTimeout(callback, interval);
+      });
+
+      reader.readAsText(file);
+    }
   }
 
   renderMeters() {
@@ -226,7 +253,8 @@ class Conductor extends PureComponent {
       <GridContainer>
         <Controls>
           <button onClick={this.onStart}>Start</button>
-          <button onClick={this.playDummy}>Play Dummy Data</button>
+          <button onClick={this.saveAs}>Save record</button>
+          <input type="file" id="input" onChange={e => this.loadFile(e.target.files)} />
         </Controls>
         <Parts>
           {this.renderParts()}
