@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { PAGE_URL, API_EVENTS } from '../constants/Constant';
 import { INSTRUMENT_TEXT } from '../constants/Instruments';
 import ServerAPI from '../ws/ServerAPI';
-import fakeFrames from '../constants/fakeFrames';
 import FileSaver from 'file-saver';
 
 // const ServerAPI = {
