@@ -6,8 +6,8 @@ import {
 } from '../constants/Constant';
 import NOTE_MAP from '../constants/NoteMap.json';
 import ServerAPI from '../ws/ServerAPI';
-import { initMIDI, downloadMIDI } from '../actions/MidiFile';
-import Replayer from '../actions/Replayer';
+import { initMIDI } from '../actions/MidiFile';
+// import Replayer from '../actions/Replayer';
 
 class Musician extends PureComponent {
 
@@ -45,12 +45,20 @@ class Musician extends PureComponent {
     }
 
     ServerAPI.on(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
-    ServerAPI.on(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
+    ServerAPI.on(API_EVENTS.GROUP_NOTE_ON, this.handleNoteOn);
+    ServerAPI.on(API_EVENTS.GROUP_NOTE_OFF, this.handleNoteOff);
+    ServerAPI.on(API_EVENTS.GROUP_PROGRAM_CHANGE, this.handleProgramChanged);
+    ServerAPI.on(API_EVENTS.GROUP_STOP, this.handleStop);
+    // ServerAPI.on(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
   }
 
   componentWillUnmount = () => {
     ServerAPI.off(API_EVENTS.GROUP_TRACK_INFO, this.handleTrackInfo);
-    ServerAPI.off(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
+    ServerAPI.off(API_EVENTS.GROUP_NOTE_ON, this.handleNoteOn);
+    ServerAPI.off(API_EVENTS.GROUP_NOTE_OFF, this.handleNoteOff);
+    ServerAPI.off(API_EVENTS.GROUP_PROGRAM_CHANGE, this.handleProgramChanged);
+    ServerAPI.off(API_EVENTS.GROUP_STOP, this.handleStop);
+    // ServerAPI.off(API_EVENTS.GROUP_CHANGED, this.handleGroupChanged);
   }
 
   isReady = () => {
@@ -58,29 +66,55 @@ class Musician extends PureComponent {
     return location.state && location.state.code && location.state.group && ServerAPI.ready
   }
 
+  handleNoteOff = (note) => {
+    if (this.state.channels.indexOf(note.channel) > -1) {
+      window.MIDI.noteOff(note.channel, note.note, 0);
+    }
+  }
+
+  handleNoteOn = (note) => {
+    if (this.state.channels.indexOf(note.channel) > -1) {
+      window.MIDI.noteOn(note.channel, note.note, note.velocity, 0);
+      this.setState({
+        activeNote: note,
+        note: NOTE_MAP[note]
+      });
+    }
+  }
+
+  handleStop = () => {
+    window.MIDI.stopAllNotes();
+  }
+
+  handleProgramChanged = (data) => {
+    window.MIDI.programChange(data.channel, data.program);
+  }
+
   handleTrackInfo = (channels, instruments, group) => {
-    // let speed = 120;
-    // let volume = 0.5;
-    this.setState({ instruments });
-    Promise.all([downloadMIDI(group.song), initMIDI(instruments)]).then(([midiFile, midi]) => {
-      // TODO: intercept information and set the to state.
-      this.replayer = new Replayer(midiFile, {
-        noteOn: (channel, note, velocity, delay) => {
-          window.MIDI.noteOn(channel, note, velocity, delay);
-          this.setState({
-            activeNote: note,
-            note: NOTE_MAP[note]
-          });
-        },
-        noteOff: (channel, note, delay) => {
-          window.MIDI.noteOff(channel, note, delay);
-        },
-        programChange: (channel, program) => {
-          window.MIDI.programChange(channel, program);
-        }
-      })
-      this.replayer.setVolumes(group.volumes);
+    this.setState({ channels, instruments });
+    initMIDI(instruments).then(() => {
       ServerAPI.musicianReady();
+    });
+    // Promise.all([]).then(([midiFile, midi]) => {
+      // TODO: intercept information and set the to state.
+      // this.replayer = new Replayer(midiFile, {
+      //   noteOn: (channel, note, velocity, delay) => {
+      //     window.MIDI.noteOn(channel, note, velocity, delay);
+      //     this.setState({
+      //       activeNote: note,
+      //       note: NOTE_MAP[note]
+      //     });
+      //   },
+      //   noteOff: (channel, note, delay) => {
+      //     window.MIDI.noteOff(channel, note, delay);
+      //   },
+      //   programChange: (channel, program) => {
+      //     window.MIDI.programChange(channel, program);
+      //   }
+      // })
+      /* TODO: move this to server */
+      // this.replayer.setVolumes(group.volumes);
+      
       // setInterval(() => {
       //   this.handleGroupChanged({ speed, volumes: [0.1, 0.1, 0.1, 1] });
       //   if (speed >= 300) {
@@ -95,21 +129,22 @@ class Musician extends PureComponent {
       //     volume += 0.1
       //   }
       // }, 1000)
-    });
+    // });
   }
 
-  handleGroupChanged = (group) => {
-    if (group && group.volumes && this.replayer) {
-      this.replayer.setVolumes(group.volumes);
-    }
+  // handleGroupChanged = (group) => {
+    // if (group && group.volumes && this.replayer) {
+    //   // TODO: move this to server
+    //   // this.replayer.setVolumes(group.volumes);
+    // }
 
-    if (group && group.speed && this.replayer) {
-      this.replayer.setSpeed(group.speed);
-      if (!this.replayer.isPlaying()) {
-        this.replayer.replay();
-      }
-    }
-  }
+    // if (group && group.speed && this.replayer) {
+    //   this.replayer.setSpeed(group.speed);
+    //   if (!this.replayer.isPlaying()) {
+    //     this.replayer.replay();
+    //   }
+    // }
+  // }
 
   render = () => {
     if (!this.isReady()) {
