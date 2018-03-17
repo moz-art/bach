@@ -30,14 +30,25 @@ const Controls = styled.div`
   justify-self: center;
 `
 
-const Metronome = styled.div``;
+const Metronome = styled.div`
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  font-size: 50px;
+`;
 
 const Parts = styled.div`
   display: flex;
 `;
 
-const Part = styled.div`
+const PartWrapper = styled.div`
   flex: auto;
+  border: 1px solid #DDD;
+  margin: 5px;
+`;
+
+const Part = styled.div`
+  height: 100%;
   margin: 10px;
   text-align: center;
   background: ${props => {
@@ -173,7 +184,11 @@ class Conductor extends PureComponent {
   renderParts () {
     return new Array(this.state.volumes.length).fill(0).map((_, index) => {
       const val = this.state.volumes[index].toFixed(3);
-      return <Part percent={val} current={this.state.currentPart === index} key={index}>{val}</Part>
+      return (
+        <PartWrapper key={index}>
+          <Part percent={val} current={this.state.currentPart === index}>{val}</Part>
+        </PartWrapper>
+      );
     });
   }
 
@@ -199,26 +214,24 @@ class Conductor extends PureComponent {
           {this.renderParts()}
         </Parts>
         <Metronome>
-          <p>
-            BPM: {this.state.bpm}
-            <svg width={svgWidth} height={svgHeight} viewBox={viewBox}
-              xmlns="http://www.w3.org/2000/svg">
+          <p>BPM: {this.state.bpm}</p>
+          <svg width={svgWidth} height={svgHeight} viewBox={viewBox}
+            xmlns="http://www.w3.org/2000/svg">
 
-              <circle id="palm-position" cx={x} cy={y} r="10" />
+            <circle id="palm-position" cx={x} cy={y} r="10" />
 
-              <line x1="200" y1="20" x2="200" y2="380"
-                strokeWidth="2" stroke="black" />
+            <line x1="200" y1="20" x2="200" y2="380"
+              strokeWidth="2" stroke="black" />
 
-              <line x1="180" y1="360" x2="20" y2="200"
-                strokeWidth="2" stroke="black" />
+            <line x1="180" y1="360" x2="20" y2="200"
+              strokeWidth="2" stroke="black" />
 
-              <line x1="40" y1="200" x2="380" y2="200"
-                strokeWidth="2" stroke="black" />
+            <line x1="40" y1="200" x2="380" y2="200"
+              strokeWidth="2" stroke="black" />
 
-              <line x1="360" y1="180" x2="220" y2="20"
-                strokeWidth="2" stroke="black" />
-            </svg>
-          </p>
+            <line x1="360" y1="180" x2="220" y2="20"
+              strokeWidth="2" stroke="black" />
+          </svg>
         </Metronome>
       </GridContainer>
     );
