@@ -48,7 +48,9 @@ class MusicianCard extends PureComponent {
     if (!instruments || !instruments.length) {
       return title;
     }
-    const instrumentsText = instruments.map((i) => (INSTRUMENT_TEXT[i])).join(', ');
+    const instrumentsText = instruments.map((i, idx) => {
+      return `${INSTRUMENT_TEXT[i]}(${idx + 1})`;
+    }).join(', ');
     return `${title} - ${instrumentsText}`;
   }
 
