@@ -17,10 +17,10 @@ const ServerAPI = {
 const POSITION_THRESHOLD = 100;
 
 const GridContainer = styled.div`
-  min-height: 500px;
+  min-height: 600px;
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 20% 80%;
 `;
 
 const Controls = styled.div`
@@ -45,11 +45,11 @@ const PartWrapper = styled.div`
   flex: auto;
   border: 1px solid #DDD;
   margin: 5px;
+  padding: 10px;
 `;
 
 const Part = styled.div`
   height: 100%;
-  margin: 10px;
   text-align: center;
   background: ${props => {
     const percent = 1 - props.percent;
