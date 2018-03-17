@@ -72,14 +72,20 @@ export class ServerAPI extends EventEmitter {
       case WS_EVENTS.TRACK_INFO:
         this.emit(API_EVENTS.GROUP_TRACK_INFO, data.channels, data.instruments, data.group);
         break;
-      case WS_EVENTS.NOTE_ON:
+      case WS_EVENTS.GROUP_NOTE_ON:
         this.emit(API_EVENTS.GROUP_NOTE_ON, data.notes);
         break;
-      case WS_EVENTS.NOTE_OFF:
+      case WS_EVENTS.GROUP_NOTE_OFF:
         this.emit(API_EVENTS.GROUP_NOTE_OFF, data.notes);
         break;
       case WS_EVENTS.SONG_INFO:
         this.emit(API_EVENTS.SONG_INFO, data.song, data.tracks);
+        break;
+      case WS_EVENTS.GROUP_PROGRAM_CHANGE:
+        this.emit(API_EVENTS.GROUP_PROGRAM_CHANGE, data.program);
+        break;
+      case WS_EVENTS.GROUP_STOP:
+        this.emit(API_EVENTS.GROUP_STOP);
         break;
       default:
         console.error('unsupported event', msg);

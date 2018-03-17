@@ -27,10 +27,12 @@ export const downloadMIDI = (song) => {
 
 export const initMIDI = (instruments) => {
   return new Promise((resolve, reject) => {
+    console.log('load sound font for ', instruments);
     window.MIDI.loadPlugin({
       soundfontUrl: '/MIDI.js/soundfont/',
       instruments: instruments,
       callback: () => {
+        console.log(instruments, 'loaded');
         resolve(true);
       }
     });
