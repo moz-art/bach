@@ -2,17 +2,18 @@ import React, { PureComponent } from 'react';
 import Leap from 'leapjs';
 import styled from 'styled-components';
 
-import { PAGE_URL } from '../constants/Constant';
-// import ServerAPI from '../ws/ServerAPI';
+import { PAGE_URL, API_EVENTS } from '../constants/Constant';
+import { INSTRUMENT_TEXT } from '../constants/Instruments';
+import ServerAPI from '../ws/ServerAPI';
 import fakeFrames from '../constants/fakeFrames';
 
-const ServerAPI = {
-  setSong: () => {},
-  setSpeed: () => {},
-  setVolume: () => {},
-  start: () => {},
-  ready: true
-};
+// const ServerAPI = {
+//   setSong: () => {},
+//   setSpeed: () => {},
+//   setVolume: () => {},
+//   start: () => {},
+//   ready: true
+// };
 
 const POSITION_THRESHOLD = 100;
 
@@ -42,7 +43,8 @@ const Parts = styled.div`
 `;
 
 const PartWrapper = styled.div`
-  flex: auto;
+  flex-grow: 1;
+  flex-basis: 0;
   border: 1px solid #DDD;
   margin: 5px;
   padding: 10px;
@@ -72,7 +74,7 @@ class Conductor extends PureComponent {
       meters: [],
       bpm: 0,
       currentPart: 0,
-      volumes: [0.5, 0.5, 0.5, 0.5],
+      parts: [],
       palmPosition: {
         x: 0,
         y: 0
@@ -93,8 +95,6 @@ class Conductor extends PureComponent {
           this.startPosition = hands.right.palmPosition;
           this.previousTimestamp = frame.timestamp;
         }
-
-        console.log(hands.right.palmPosition);
 
         const palmPosition = {
           x: hands.right.palmPosition[0],
@@ -124,30 +124,40 @@ class Conductor extends PureComponent {
       if (hands.left) {
         const [x, y] = hands.left.palmPosition;
         const direction = hands.left.palmNormal[1];
-        const volumes = this.state.volumes.slice();
-        const currentPart = Math.floor((x + 200) / 200 * this.state.volumes.length);
+        const parts = this.state.parts.slice();
+        const currentPart = Math.floor((x + 200) / 200 * this.state.parts.length);
         const nextVolume = Math.min(Math.max((y - 100) / 300, 0), 1);
-        const currentVolume = volumes[currentPart];
+        const currentVolume = parts[currentPart] ? parts[currentPart].volume : 0;
 
         // palm face to up
         if ((direction > 0 && nextVolume > currentVolume) ||
           (direction <= 0 && nextVolume <= currentVolume)) {
-          volumes[currentPart] = nextVolume;
-          // ServerAPI.setVolume(currentPart, nextVolume);
+          parts[currentPart].volume = nextVolume;
+          ServerAPI.setVolume(currentPart, nextVolume);
         }
 
-        this.setState({ currentPart, volumes });
+        this.setState({ currentPart, parts });
       }
     }
   }
 
   componentDidMount () {
-    // const { location, history } = this.props;
-    // if (!location.state || !location.state.code || !ServerAPI.ready) {
-    //   // no code no show.
-    //   history.replace(PAGE_URL.PIN_CODE);
-    //   return;
-    // }
+    const { location, history } = this.props;
+    if (!location.state || !location.state.code || !ServerAPI.ready) {
+      // no code no show.
+      history.replace(PAGE_URL.PIN_CODE);
+      return;
+    }
+
+    ServerAPI.on(API_EVENTS.SONG_INFO, (song, tracks) => {
+      const parts = tracks.map(track => {
+        return {
+          name: INSTRUMENT_TEXT[track[0]],
+          volume: 0.5
+        };
+      });
+      this.setState({ parts });
+    });
 
     this.startPosition = null;
     this.previousTimestamp = null;
@@ -182,21 +192,22 @@ class Conductor extends PureComponent {
   }
 
   renderParts () {
-    return new Array(this.state.volumes.length).fill(0).map((_, index) => {
-      const val = this.state.volumes[index].toFixed(3);
+    return new Array(this.state.parts.length).fill(0).map((_, index) => {
+      const part = this.state.parts[index];
+      const val = part.volume.toFixed(3);
       return (
         <PartWrapper key={index}>
-          <Part percent={val} current={this.state.currentPart === index}>{val}</Part>
+          <Part percent={val} current={this.state.currentPart === index}>{part.name}<br />{val}</Part>
         </PartWrapper>
       );
     });
   }
 
   render() {
-    // if (!this.props.location.state || !this.props.location.state.code || !ServerAPI.ready) {
-    //   // no code no show.
-    //   return null;
-    // }
+    if (!this.props.location.state || !this.props.location.state.code || !ServerAPI.ready) {
+      // no code no show.
+      return null;
+    }
 
     const svgWidth = 400;
     const svgHeight = 400;
