@@ -70,6 +70,7 @@ class Conductor extends PureComponent {
   constructor (props) {
     super(props);
 
+    this.bpmHistory = [];
     this.state = {
       meters: [],
       bpm: 0,
@@ -113,8 +114,11 @@ class Conductor extends PureComponent {
           const meters = this.state.meters.slice();
           meters.push({ step: STEPS[this.step], duration });
           const bpm = Math.floor(60 / (duration / 1000));
-          ServerAPI.setSpeed(bpm);
-          this.setState({ meters, bpm });
+          this.bpmHistory.push(bpm);
+          this.bpmHistory = this.bpmHistory.slice(-10);
+          const nextBpm = Math.floor(this.bpmHistory.reduce((previous, current) => previous + current) / this.bpmHistory.length);
+          ServerAPI.setSpeed(nextBpm);
+          this.setState({ meters, bpm: nextBpm });
           this.startPosition = null;
           this.max = 0;
           this.step = (this.step + 1) % STEPS.length;
@@ -132,8 +136,11 @@ class Conductor extends PureComponent {
         // palm face to up
         if ((direction > 0 && nextVolume > currentVolume) ||
           (direction <= 0 && nextVolume <= currentVolume)) {
-          parts[currentPart].volume = nextVolume;
-          ServerAPI.setVolume(currentPart, nextVolume);
+          const part = parts[currentPart];
+          if (part) {
+            part.volume = nextVolume;
+            ServerAPI.setVolume(currentPart, nextVolume);
+          }
         }
 
         this.setState({ currentPart, parts });
@@ -150,9 +157,9 @@ class Conductor extends PureComponent {
     }
 
     ServerAPI.on(API_EVENTS.SONG_INFO, (song, tracks) => {
-      const parts = tracks.map(track => {
+      const parts = tracks.map((track, i) => {
         return {
-          name: INSTRUMENT_TEXT[track[0]],
+          name: INSTRUMENT_TEXT[track[0]] + ` (${i + 1})`,
           volume: 0.5
         };
       });
@@ -197,7 +204,7 @@ class Conductor extends PureComponent {
       const val = part.volume.toFixed(3);
       return (
         <PartWrapper key={index}>
-          <Part percent={val} current={this.state.currentPart === index}>{part.name}<br />{val}</Part>
+          <Part percent={val} current={this.state.currentPart === index}>{part.name}</Part>
         </PartWrapper>
       );
     });
