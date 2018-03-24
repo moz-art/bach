@@ -38,7 +38,7 @@ export const API_EVENTS = {
   ROLE_RESULT: 'requestRoleResult'
 };
 
-export const BASE_URL = '/bach/';
+export const BASE_URL = '/';
 
 export const PAGE_URL = {
   PIN_CODE: `${BASE_URL}`,
