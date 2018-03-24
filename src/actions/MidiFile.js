@@ -1,4 +1,5 @@
 import MidiFile from 'jasmid-module/midifile';
+import { BASE_URL } from '../constants/Constant';
 
 export const downloadMIDI = (song) => {
   return new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ export const initMIDI = (instruments) => {
   return new Promise((resolve, reject) => {
     console.log('load sound font for ', instruments);
     window.MIDI.loadPlugin({
-      soundfontUrl: '/MIDI.js/soundfont/',
+      soundfontUrl: `${BASE_URL}MIDI.js/soundfont/`,
       instruments: instruments,
       callback: () => {
         console.log(instruments, 'loaded');
