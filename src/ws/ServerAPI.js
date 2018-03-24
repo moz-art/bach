@@ -144,4 +144,4 @@ export class ServerAPI extends EventEmitter {
   }
 }
 
-export default new ServerAPI('ws://192.168.0.164:8000/');
+export default new ServerAPI('ws://localhost:8000/');
